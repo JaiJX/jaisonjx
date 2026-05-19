@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git -C 'C:\\\\Users\\\\User\\\\WebstormProjects\\\\jaisonjx\\\\.claude\\\\worktrees\\\\practical-tesla-b20581' commit -m ' *)"
+    ]
+  }
+}
