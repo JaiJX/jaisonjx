@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photography — Jaison Jiji</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<div class="pf-wrap page-scroll">
+
+    <div class="bubble b1"></div>
+    <div class="bubble b2"></div>
+    <div class="bubble b3"></div>
+    <div class="bubble b4"></div>
+    <div class="bubble b5"></div>
+    <div class="bubble b6"></div>
+    <div class="bubble b7"></div>
+    <div class="bubble b8"></div>
+    <div class="bubble b9"></div>
+    <div class="bubble b10"></div>
+
+    <nav class="pf-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="achievements.html" class="nav-link">Achievements</a>
+        <a href="photography.html" class="nav-link active">Photography</a>
+    </nav>
+
+    <div class="page-content">
+
+        <div class="page-header fade-in">
+            <div class="pf-tag">Through the lens</div>
+            <h1 class="pf-name">Photo<span>graphy</span></h1>
+            <p class="pf-bio" style="max-width:480px; margin-top: 8px;">
+                A collection of moments I've captured. Click any photo to view it full size.
+            </p>
+        </div>
+
+        <!-- Upload zone -->
+        <div class="upload-zone fade-in-delay" id="uploadZone">
+            <input type="file" id="photoInput" accept="image/*" multiple hidden />
+            <div class="upload-inner" id="uploadInner">
+                <div class="upload-icon">📷</div>
+                <p class="upload-title">Drop photos here or <span class="upload-link" id="uploadTrigger">browse</span></p>
+                <p class="upload-sub">JPG, PNG, WEBP — your photos appear instantly below</p>
+            </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar fade-in-delay" id="filterBar" style="display:none;">
+            <button class="filter-btn active" data-filter="all">All</button>
+        </div>
+
+        <!-- Gallery grid -->
+        <div class="photo-grid" id="photoGrid">
+            <div class="gallery-empty" id="galleryEmpty">
+                <p>Your photos will appear here once you upload them above.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+    <button class="lb-close" id="lbClose">✕</button>
+    <button class="lb-prev" id="lbPrev">&#8249;</button>
+    <button class="lb-next" id="lbNext">&#8250;</button>
+    <div class="lb-img-wrap">
+        <img class="lb-img" id="lbImg" src="" alt="" />
+        <div class="lb-caption" id="lbCaption"></div>
+    </div>
+</div>
+
+<script>
+    const photoInput  = document.getElementById('photoInput');
+    const uploadZone  = document.getElementById('uploadZone');
+    const uploadInner = document.getElementById('uploadInner');
+    const uploadTrigger = document.getElementById('uploadTrigger');
+    const photoGrid   = document.getElementById('photoGrid');
+    const galleryEmpty = document.getElementById('galleryEmpty');
+    const filterBar   = document.getElementById('filterBar');
+    const lightbox    = document.getElementById('lightbox');
+    const lbImg       = document.getElementById('lbImg');
+    const lbCaption   = document.getElementById('lbCaption');
+    const lbClose     = document.getElementById('lbClose');
+    const lbPrev      = document.getElementById('lbPrev');
+    const lbNext      = document.getElementById('lbNext');
+
+    let photos = [];   // { src, name }
+    let currentIndex = 0;
+
+    uploadTrigger.addEventListener('click', () => photoInput.click());
+
+    uploadZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        uploadZone.classList.add('drag-over');
+    });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadZone.classList.remove('drag-over');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    photoInput.addEventListener('change', () => handleFiles(photoInput.files));
+
+    function handleFiles(files) {
+        Array.from(files).forEach(file => {
+            if (!file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = e => addPhoto(e.target.result, file.name);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function addPhoto(src, name) {
+        const index = photos.length;
+        photos.push({ src, name });
+
+        galleryEmpty.style.display = 'none';
+        filterBar.style.display = 'flex';
+
+        const item = document.createElement('div');
+        item.className = 'photo-item';
+        item.dataset.index = index;
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = name;
+        img.loading = 'lazy';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'photo-overlay';
+        overlay.innerHTML = `<span class="photo-name">${name.replace(/\.[^.]+$/, '')}</span>`;
+
+        item.appendChild(img);
+        item.appendChild(overlay);
+        item.addEventListener('click', () => openLightbox(index));
+        photoGrid.appendChild(item);
+    }
+
+    function openLightbox(index) {
+        currentIndex = index;
+        lbImg.src = photos[index].src;
+        lbCaption.textContent = photos[index].name.replace(/\.[^.]+$/, '');
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function showNext() {
+        currentIndex = (currentIndex + 1) % photos.length;
+        lbImg.src = photos[currentIndex].src;
+        lbCaption.textContent = photos[currentIndex].name.replace(/\.[^.]+$/, '');
+    }
+
+    function showPrev() {
+        currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+        lbImg.src = photos[currentIndex].src;
+        lbCaption.textContent = photos[currentIndex].name.replace(/\.[^.]+$/, '');
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lbNext.addEventListener('click', showNext);
+    lbPrev.addEventListener('click', showPrev);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+    document.addEventListener('keydown', e => {
+        if (!lightbox.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') showNext();
+        if (e.key === 'ArrowLeft') showPrev();
+    });
+</script>
+
+</body>
+</html>
