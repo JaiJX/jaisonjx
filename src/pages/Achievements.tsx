@@ -2,11 +2,8 @@ import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
 
 const timeline = [
-  { year: '2024', title: 'Add your achievement here', desc: 'Describe what you accomplished and why it matters to you.', tag: 'Design' },
-  { year: '2024', title: 'Add your achievement here', desc: 'Describe what you accomplished and why it matters to you.', tag: 'Development' },
-  { year: '2023', title: 'Add your achievement here', desc: 'Describe what you accomplished and why it matters to you.', tag: 'Photography' },
-  { year: '2023', title: 'Add your achievement here', desc: 'Describe what you accomplished and why it matters to you.', tag: 'Education' },
-  { year: '2022', title: 'Add your achievement here', desc: 'Describe what you accomplished and why it matters to you.', tag: 'Award' },
+  { year: '2026', title: 'Lighting Designer', desc: 'Achieved MA university Completion certification', tag: 'Lighting' },
+  { year: '2025', title: 'Python 3 Course', desc: 'Completed the Python 3 course through Codecademy', tag: 'Development' },
 ]
 
 const awards = [
@@ -60,7 +57,7 @@ export default function Achievements() {
                   <div className="edu-icon">📜</div>
                   <div>
                     <div className="edu-degree">Certification Name</div>
-                    <div className="edu-school">Issuer · Year</div>
+                    <div className="edu-school">NA</div>
                   </div>
                 </div>
               </div>

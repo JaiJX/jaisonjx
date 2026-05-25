@@ -79,9 +79,17 @@ export default function About() {
             <h3 className="card-title">Get in Touch</h3>
             <p className="contact-sub">Have a project in mind or just want to say hi?</p>
             <div className="contact-links">
-              <a href="mailto:jaisonsjxj@gmail.com" className="contact-row">
-                <span className="contact-icon">✉</span>
-                <span>jaisonsjxj@gmail.com</span>
+              <a href="https://www.instagram.com/jjaison_jiji/" className="contact-row">
+                <span className="contact-icon">📸</span>
+                <span>Instagram/jjaison_jiji</span>
+              </a>
+              <a className="contact-row">
+                <span className="contact-icon">🎮</span>
+                <span>Discord/JaiJ</span>
+              </a>
+              <a href="https://linkedin.com/in/jaison-jiji-48b5a838b" className="contact-row">
+                <span className="contact-icon">in</span>
+                <span>Linkedin/Jaison Jiji</span>
               </a>
               <a
                 href="https://github.com/JaiJX"
