@@ -13,6 +13,10 @@ body {
     font-family: 'DM Sans', sans-serif;
 }
 
+#root {
+    width: 100%;
+}
+
 /* ─── Wrapper ─────────────────────────────────── */
 .pf-wrap {
     position: relative;
