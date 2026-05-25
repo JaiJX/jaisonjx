@@ -1,40 +1,33 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
 
 type Photo = { src: string; name: string }
 
 const stripExt = (name: string) => name.replace(/\.[^.]+$/, '')
+const baseName = (path: string) => path.split('/').pop() ?? path
+
+// Every image dropped into src/assets/photos/ is bundled automatically.
+const imported = import.meta.glob('../assets/photos/*.{jpg,jpeg,png,webp,gif,avif,JPG,JPEG,PNG,WEBP,GIF,AVIF}', {
+  eager: true,
+  import: 'default',
+}) as Record<string, string>
+
+const photos: Photo[] = Object.entries(imported)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([path, src]) => ({ src, name: baseName(path) }))
 
 export default function Photography() {
-  const [photos, setPhotos] = useState<Photo[]>([])
-  const [dragOver, setDragOver] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleFiles = useCallback((files: FileList | null) => {
-    if (!files) return
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith('image/')) return
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const src = e.target?.result
-        if (typeof src === 'string') {
-          setPhotos((prev) => [...prev, { src, name: file.name }])
-        }
-      }
-      reader.readAsDataURL(file)
-    })
-  }, [])
 
   const closeLightbox = useCallback(() => setLightboxIndex(null), [])
   const showNext = useCallback(
     () => setLightboxIndex((i) => (i === null ? i : (i + 1) % photos.length)),
-    [photos.length],
+    [],
   )
   const showPrev = useCallback(
     () => setLightboxIndex((i) => (i === null ? i : (i - 1 + photos.length) % photos.length)),
-    [photos.length],
+    [],
   )
 
   useEffect(() => {
@@ -70,54 +63,15 @@ export default function Photography() {
           </p>
         </div>
 
-        <div
-          className={'upload-zone fade-in-delay' + (dragOver ? ' drag-over' : '')}
-          onDragOver={(e) => {
-            e.preventDefault()
-            setDragOver(true)
-          }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={(e) => {
-            e.preventDefault()
-            setDragOver(false)
-            handleFiles(e.dataTransfer.files)
-          }}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            hidden
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-          <div className="upload-inner">
-            <div className="upload-icon">📷</div>
-            <p className="upload-title">
-              Drop photos here or{' '}
-              <span className="upload-link" onClick={() => fileInputRef.current?.click()}>
-                browse
-              </span>
-            </p>
-            <p className="upload-sub">JPG, PNG, WEBP — your photos appear instantly below</p>
-          </div>
-        </div>
-
-        {photos.length > 0 && (
-          <div className="filter-bar fade-in-delay">
-            <button className="filter-btn active" type="button">All</button>
-          </div>
-        )}
-
-        <div className="photo-grid">
+        <div className="photo-grid fade-in-delay">
           {photos.length === 0 ? (
             <div className="gallery-empty">
-              <p>Your photos will appear here once you upload them above.</p>
+              <p>No photos to show yet — check back soon.</p>
             </div>
           ) : (
             photos.map((photo, index) => (
-              <div className="photo-item" key={index} onClick={() => setLightboxIndex(index)}>
-                <img src={photo.src} alt={photo.name} loading="lazy" />
+              <div className="photo-item" key={photo.name} onClick={() => setLightboxIndex(index)}>
+                <img src={photo.src} alt={stripExt(photo.name)} loading="lazy" />
                 <div className="photo-overlay">
                   <span className="photo-name">{stripExt(photo.name)}</span>
                 </div>
