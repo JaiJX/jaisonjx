@@ -572,69 +572,6 @@ body {
 }
 
 /* ─── Photography page ────────────────────────── */
-.upload-zone {
-    border: 2px dashed rgba(255,107,26,0.35);
-    border-radius: 20px;
-    padding: 40px 24px;
-    text-align: center;
-    background: rgba(255,255,255,0.4);
-    margin-bottom: 32px;
-    transition: border-color 0.2s, background 0.2s;
-    cursor: pointer;
-}
-
-.upload-zone.drag-over {
-    border-color: #FF6B1A;
-    background: rgba(255,107,26,0.05);
-}
-
-.upload-icon { font-size: 36px; margin-bottom: 12px; }
-
-.upload-title {
-    font-size: 15px;
-    color: #4a2800;
-    margin-bottom: 6px;
-}
-
-.upload-link {
-    color: #FF6B1A;
-    cursor: pointer;
-    font-weight: 500;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-.upload-sub {
-    font-size: 12px;
-    color: #9a5c2e;
-    opacity: 0.8;
-}
-
-/* Filter bar */
-.filter-bar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-}
-
-.filter-btn {
-    background: transparent;
-    border: 1.5px solid rgba(255,107,26,0.25);
-    color: #9a5c2e;
-    border-radius: 20px;
-    padding: 6px 16px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.filter-btn:hover, .filter-btn.active {
-    background: #FF6B1A;
-    border-color: #FF6B1A;
-    color: #fff;
-}
-
 /* Photo grid */
 .photo-grid {
     columns: 3 240px;
