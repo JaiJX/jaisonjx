@@ -29,6 +29,8 @@ jobs:
       - run: npm ci
 
       - run: npm run build
+        env:
+          VITE_NEON_DATA_API_URL: ${{ vars.NEON_DATA_API_URL }}
 
       # SPA fallback: serve index.html for unknown routes (deep links / refresh).
       - run: cp dist/index.html dist/404.html
