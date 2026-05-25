@@ -45,3 +45,5 @@ grant usage on schema public to anonymous;
 grant select on public.photo_likes to anonymous;
 grant execute on function public.increment_like(text) to anonymous;
 grant execute on function public.decrement_like(text) to anonymous;
+
+
