@@ -12,10 +12,10 @@ dist-ssr
 *.local
 *.tsbuildinfo
 
-# Local env files (keep .env tracked)
+# Local env files (keep .env.example tracked)
 .env
-.env
-!.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*
