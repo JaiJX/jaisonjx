@@ -4,6 +4,7 @@ import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
 import { useBookSearch } from '../hooks/useBookSearch'
 
+/** Embedded Book Finder demo rendered inline on the Projects page. */
 function BookTracker() {
   const [query, setQuery] = useState('')
   const { books, error, loading } = useBookSearch(query)
@@ -55,6 +56,7 @@ function BookTracker() {
 
 const tags = ['React', 'TypeScript', 'Google Books API', 'Vite']
 
+/** Portfolio Projects page showcasing built work with a live Book Finder demo. */
 export default function Projects() {
   return (
     <div className="pf-wrap page-scroll">
