@@ -12,9 +12,10 @@ dist-ssr
 *.local
 *.tsbuildinfo
 
-# Local env files
+# Local env files (keep .env.example tracked)
 .env
-.env.local
+.env.*
+!.env.example
 
 # Claude local settings (machine-specific)
 .claude/settings.local.json
