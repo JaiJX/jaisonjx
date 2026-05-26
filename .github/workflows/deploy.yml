@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -30,7 +28,7 @@ jobs:
       - run: npm run build
         env:
           VITE_NEON_DATA_API_URL: ${{ vars.NEON_DATA_API_URL }}
-          VITE_BOOK_API_KEY: ${{ secrets.BOOK_API_KEY }}
+          VITE_BOOK_API_KEY: ${{ secrets.VITE_BOOK_API_KEY }}
 
       - run: cp dist/index.html dist/404.html
 
@@ -41,6 +39,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

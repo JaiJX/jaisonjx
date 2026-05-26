@@ -16,10 +16,9 @@
   color: var(--text);
   background: var(--dark);
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   min-height: 100vh;
   width: 100%;
 }
