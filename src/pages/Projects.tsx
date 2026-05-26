@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
-import { useBookSearch } from '../hooks/useBookSearch.ts'
+import { useBookSearch } from '../hooks/useBookSearch'
 
+/** Embedded Book Finder demo rendered inline on the Projects page. */
 function BookTracker() {
   const [query, setQuery] = useState('')
   const { books, error, loading } = useBookSearch(query)
@@ -13,8 +14,10 @@ function BookTracker() {
       <div className="bt-search-row">
         <input
           className="bt-input"
+          id="project-search"
           type="text"
           placeholder="Search for a book..."
+          aria-label="Search for a book"
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
@@ -53,6 +56,7 @@ function BookTracker() {
 
 const tags = ['React', 'TypeScript', 'Google Books API', 'Vite']
 
+/** Portfolio Projects page showcasing built work with a live Book Finder demo. */
 export default function Projects() {
   return (
     <div className="pf-wrap page-scroll">
