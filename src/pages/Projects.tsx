@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
-import { useBookSearch } from '../hooks/useBookSearch.ts'
+import { useBookSearch } from '../hooks/useBookSearch'
 
 function BookTracker() {
   const [query, setQuery] = useState('')
@@ -13,8 +13,10 @@ function BookTracker() {
       <div className="bt-search-row">
         <input
           className="bt-input"
+          id="project-search"
           type="text"
           placeholder="Search for a book..."
+          aria-label="Search for a book"
           value={query}
           onChange={e => setQuery(e.target.value)}
         />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useBookSearch } from '../hooks/useBookSearch.ts'
+import { useBookSearch } from '../hooks/useBookSearch'
 import '../styles/book-tracker-app.css'
 
 export default function BookTrackerApp() {
@@ -8,8 +8,9 @@ export default function BookTrackerApp() {
   const { books, error, loading } = useBookSearch(query)
 
   useEffect(() => {
+    const prevBackground = document.body.style.background
     document.body.style.background = '#0D0D14'
-    return () => { document.body.style.background = '' }
+    return () => { document.body.style.background = prevBackground }
   }, [])
 
   return (
@@ -25,8 +26,10 @@ export default function BookTrackerApp() {
           <div className="search">
             <div>
               <input
+                id="book-search"
                 type="text"
                 placeholder="Search for a book"
+                aria-label="Search for a book"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
               />
