@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useBookSearch } from '../hooks/useBookSearch'
 import '../styles/book-tracker-app.css'
 
+/** Full-screen dark-themed Book Finder page accessible at /projects/book-tracker. */
 export default function BookTrackerApp() {
   const [query, setQuery] = useState('')
   const { books, error, loading } = useBookSearch(query)
