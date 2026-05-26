@@ -12,10 +12,12 @@ dist-ssr
 *.local
 *.tsbuildinfo
 
-# Local env files (keep .env tracked)
+# Local env files
 .env
-.env
-!.env
+.env.local
+
+# Claude local settings (machine-specific)
+.claude/settings.local.json
 
 # Editor directories and files
 .vscode/*

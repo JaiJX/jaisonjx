@@ -1,0 +1,191 @@
+.bt-app {
+  --red: #E63946;
+  --red-light: #FF6B6B;
+  --red-dark: #C0392B;
+  --dark: #0D0D14;
+  --dark-2: #16162A;
+  --dark-3: #1E1E38;
+  --text: #F2F2F2;
+  --text-muted: #9CA3AF;
+  --border: rgba(230, 57, 70, 0.18);
+  --border-hover: rgba(230, 57, 70, 0.5);
+  --shadow-red: rgba(230, 57, 70, 0.28);
+
+  font: 18px/145% system-ui, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: 0.18px;
+  color: var(--text);
+  background: var(--dark);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  min-height: 100vh;
+  width: 100%;
+}
+
+.bt-app main {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: var(--dark);
+  border-inline: 1px solid var(--border);
+}
+
+.bt-app .bt-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.bt-app .bt-bottom {
+  width: 100%;
+}
+
+.bt-app h1 {
+  color: var(--red);
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 0.4rem 0 0;
+  text-shadow: 0 0 30px rgba(230, 57, 70, 0.4);
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+.bt-app h2 {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 1.5rem;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+.bt-app .image {
+  padding-top: 3rem;
+  width: 110px;
+  height: auto;
+  filter: drop-shadow(0 0 24px rgba(230, 57, 70, 0.55));
+}
+
+.bt-app .search {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.bt-app .search input {
+  width: 440px;
+  max-width: 88vw;
+  padding: 0.85rem 1.6rem;
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  background: var(--dark-2);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.bt-app .search input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.bt-app .search input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 22px rgba(230, 57, 70, 0.28);
+}
+
+.bt-app .allBooks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  padding: 1rem 2rem 3rem;
+}
+
+.bt-app .bookCard {
+  background: var(--dark-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem;
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.bt-app .bookCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 36px var(--shadow-red);
+  border-color: var(--border-hover);
+}
+
+.bt-app .bookCard img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.bt-app .bookCard h3 {
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0.3rem 0 0.2rem;
+  line-height: 1.4;
+}
+
+.bt-app .bookCard p {
+  color: var(--red-light);
+  font-size: 0.78rem;
+  margin: 0;
+  opacity: 0.85;
+}
+
+.bt-app .error {
+  color: var(--red-light);
+  font-size: 0.95rem;
+  padding: 1rem 2rem;
+  background: rgba(230, 57, 70, 0.08);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 420px;
+}
+
+.bt-app .bt-back {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  background: rgba(230, 57, 70, 0.12);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+  border-radius: 40px;
+  color: var(--red-light);
+  font-size: 13px;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  padding: 8px 18px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  z-index: 100;
+}
+
+.bt-app .bt-back:hover {
+  background: rgba(230, 57, 70, 0.25);
+  color: #fff;
+}
