@@ -1,36 +1,56 @@
-// Talks to the Neon Data API (PostgREST). Anonymous requests need no auth
-// header — access is governed by GRANTs on the `anonymous` role (see db/likes.sql).
+// Talks to the MongoDB Atlas Data API on behalf of the browser.
+// Set VITE_MONGODB_DATA_API_URL and VITE_MONGODB_API_KEY to enable likes.
+// Restrict the API key in Atlas to read + findOneAndUpdate on photo_likes only.
 
-const RAW = import.meta.env.VITE_NEON_DATA_API_URL
-const BASE = RAW ? RAW.replace(/\/+$/, '') + '/rest/v1' : null
+const DATA_API_URL = import.meta.env.VITE_MONGODB_DATA_API_URL
+const API_KEY = import.meta.env.VITE_MONGODB_API_KEY
+const DATA_SOURCE = import.meta.env.VITE_MONGODB_DATA_SOURCE ?? 'Cluster0'
+const DATABASE = import.meta.env.VITE_MONGODB_DATABASE ?? 'portfolio'
+const COLLECTION = 'photo_likes'
 
-export const likesEnabled = BASE !== null
+export const likesEnabled = !!(DATA_API_URL && API_KEY)
 
-const jsonHeaders = { 'Content-Type': 'application/json' }
-
-export async function fetchLikeCounts(): Promise<Record<string, number>> {
-  if (!BASE) return {}
-  const res = await fetch(`${BASE}/photo_likes?select=photo_id,likes`, {
-    headers: jsonHeaders,
-  })
-  if (!res.ok) throw new Error(`Failed to load likes (${res.status})`)
-  const rows = (await res.json()) as { photo_id: string; likes: number }[]
-  return Object.fromEntries(rows.map((r) => [r.photo_id, r.likes]))
-}
-
-async function rpc(fn: 'increment_like' | 'decrement_like', pid: string): Promise<number> {
-  if (!BASE) return 0
-  const res = await fetch(`${BASE}/rpc/${fn}`, {
+async function action<T>(name: string, body: object): Promise<T> {
+  const res = await fetch(`${DATA_API_URL}/action/${name}`, {
     method: 'POST',
-    headers: { ...jsonHeaders, Accept: 'application/json' },
-    body: JSON.stringify({ pid }),
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY!,
+    },
+    body: JSON.stringify({ dataSource: DATA_SOURCE, database: DATABASE, collection: COLLECTION, ...body }),
   })
-  if (!res.ok) throw new Error(`Like request failed (${res.status})`)
-  const data = await res.json()
-  if (typeof data === 'number') return data
-  if (Array.isArray(data)) return Number(data[0]) || 0
-  return Number(data) || 0
+  if (!res.ok) throw new Error(`MongoDB Data API error (${res.status})`)
+  return res.json()
 }
 
-export const incrementLike = (pid: string) => rpc('increment_like', pid)
-export const decrementLike = (pid: string) => rpc('decrement_like', pid)
+/**
+ * Fetches all photo like counts from MongoDB.
+ * @returns Map of photo_id → like count.
+ */
+export async function fetchLikeCounts(): Promise<Record<string, number>> {
+  if (!likesEnabled) return {}
+  const { documents } = await action<{ documents: { photo_id: string; likes: number }[] }>('find', {
+    projection: { photo_id: 1, likes: 1, _id: 0 },
+  })
+  return Object.fromEntries((documents ?? []).map(d => [d.photo_id, d.likes]))
+}
+
+async function updateLike(pid: string, delta: 1 | -1): Promise<number> {
+  if (!likesEnabled) return 0
+  // Decrement filter guards against going below zero.
+  const filter = delta === -1 ? { photo_id: pid, likes: { $gt: 0 } } : { photo_id: pid }
+  const { document } = await action<{ document: { likes: number } | null }>('findOneAndUpdate', {
+    filter,
+    update: { $inc: { likes: delta }, $setOnInsert: { photo_id: pid } },
+    upsert: delta === 1,
+    returnNewDocument: true,
+    projection: { likes: 1, _id: 0 },
+  })
+  return document?.likes ?? 0
+}
+
+/** Atomically increments the like count for a photo. Returns the new count. */
+export const incrementLike = (pid: string) => updateLike(pid, 1)
+
+/** Atomically decrements the like count for a photo (never below zero). Returns the new count. */
+export const decrementLike = (pid: string) => updateLike(pid, -1)

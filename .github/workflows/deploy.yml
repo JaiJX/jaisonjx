@@ -27,7 +27,10 @@ jobs:
 
       - run: npm run build
         env:
-          VITE_NEON_DATA_API_URL: ${{ vars.NEON_DATA_API_URL }}
+          VITE_MONGODB_DATA_API_URL: ${{ vars.MONGODB_DATA_API_URL }}
+          VITE_MONGODB_API_KEY: ${{ secrets.VITE_MONGODB_API_KEY }}
+          VITE_MONGODB_DATA_SOURCE: ${{ vars.MONGODB_DATA_SOURCE }}
+          VITE_MONGODB_DATABASE: ${{ vars.MONGODB_DATABASE }}
           VITE_BOOK_API_KEY: ${{ secrets.VITE_BOOK_API_KEY }}
 
       - run: cp dist/index.html dist/404.html
