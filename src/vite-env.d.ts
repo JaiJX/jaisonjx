@@ -1,10 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_MONGODB_DATA_API_URL?: string
-  readonly VITE_MONGODB_API_KEY?: string
-  readonly VITE_MONGODB_DATA_SOURCE?: string
-  readonly VITE_MONGODB_DATABASE?: string
+  readonly VITE_NEON_DATA_API_URL?: string
   readonly VITE_BOOK_API_KEY?: string
 }
 

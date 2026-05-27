@@ -6,7 +6,7 @@ import {
   fetchLikeCounts,
   incrementLike,
   decrementLike,
-} from '../lib/likes'
+} from '../lib/likes.ts'
 
 type Photo = { src: string; name: string }
 
