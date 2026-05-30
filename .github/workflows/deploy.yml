@@ -27,7 +27,7 @@ jobs:
 
       - run: npm run build
         env:
-          VITE_NEON_DATA_API_URL: ${{ vars.NEON_DATA_API_URL }}
+          VITE_NEON_DATABASE_URL: ${{ vars.NEON_DATABASE_URL }}
           VITE_BOOK_API_KEY: ${{ secrets.VITE_BOOK_API_KEY }}
 
       - run: cp dist/index.html dist/404.html

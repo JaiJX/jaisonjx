@@ -1,36 +1,33 @@
-// Talks to the Neon Data API (PostgREST). Anonymous requests need no auth
-// header — access is governed by GRANTs on the `anonymous` role (see db/likes.sql).
+import { neon } from '@neondatabase/serverless'
 
-const RAW = import.meta.env.VITE_NEON_DATA_API_URL
-const BASE = RAW ? RAW.replace(/\/+$/, '') + '/rest/v1' : null
+const DATABASE_URL = import.meta.env.VITE_NEON_DATABASE_URL as string | undefined
+export const likesEnabled = Boolean(DATABASE_URL)
 
-export const likesEnabled = BASE !== null
-
-const jsonHeaders = { 'Content-Type': 'application/json' }
+// Empty authToken = anonymous/public access via Neon Authorize.
+const sql = DATABASE_URL ? neon(DATABASE_URL, { authToken: async () => '' }) : null
 
 export async function fetchLikeCounts(): Promise<Record<string, number>> {
-  if (!BASE) return {}
-  const res = await fetch(`${BASE}/photo_likes?select=photo_id,likes`, {
-    headers: jsonHeaders,
-  })
-  if (!res.ok) throw new Error(`Failed to load likes (${res.status})`)
-  const rows = (await res.json()) as { photo_id: string; likes: number }[]
+  if (!sql) return {}
+  const rows = await sql`SELECT photo_id, likes FROM photo_likes` as { photo_id: string; likes: number }[]
   return Object.fromEntries(rows.map((r) => [r.photo_id, r.likes]))
 }
 
-async function rpc(fn: 'increment_like' | 'decrement_like', pid: string): Promise<number> {
-  if (!BASE) return 0
-  const res = await fetch(`${BASE}/rpc/${fn}`, {
-    method: 'POST',
-    headers: { ...jsonHeaders, Accept: 'application/json' },
-    body: JSON.stringify({ pid }),
-  })
-  if (!res.ok) throw new Error(`Like request failed (${res.status})`)
-  const data = await res.json()
-  if (typeof data === 'number') return data
-  if (Array.isArray(data)) return Number(data[0]) || 0
-  return Number(data) || 0
+export async function incrementLike(pid: string): Promise<number> {
+  if (!sql) return 0
+  const rows = await sql`
+    INSERT INTO photo_likes (photo_id, likes) VALUES (${pid}, 1)
+    ON CONFLICT (photo_id) DO UPDATE SET likes = photo_likes.likes + 1
+    RETURNING likes AS count
+  ` as { count: number }[]
+  return rows[0]?.count ?? 0
 }
 
-export const incrementLike = (pid: string) => rpc('increment_like', pid)
-export const decrementLike = (pid: string) => rpc('decrement_like', pid)
+export async function decrementLike(pid: string): Promise<number> {
+  if (!sql) return 0
+  const rows = await sql`
+    UPDATE photo_likes SET likes = GREATEST(likes - 1, 0)
+    WHERE photo_id = ${pid}
+    RETURNING likes AS count
+  ` as { count: number }[]
+  return rows[0]?.count ?? 0
+}
