@@ -108,7 +108,8 @@ export default function Photography() {
         .then((serverCount) => {
           setCounts((prev) => ({ ...prev, [id]: serverCount }))
         })
-        .catch(() => {
+        .catch((err: unknown) => {
+          console.error('[likes]', err)
           // Revert the optimistic update on failure.
           setLiked((prev) => {
             const next = new Set(prev)

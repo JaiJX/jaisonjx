@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Background from '../components/Background.tsx'
+import Logo from '../components/Logo.tsx'
 import Nav from '../components/Nav.tsx'
 
 export default function Home() {
@@ -9,9 +10,7 @@ export default function Home() {
       <Nav />
 
       <div className="avatar-wrap">
-        <div className="avatar-ring">
-          <div className="avatar-inner">JJ</div>
-        </div>
+        <Logo className="avatar-logo" />
       </div>
 
       <div className="pf-content">
