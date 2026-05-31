@@ -45,17 +45,27 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Select notification target
+  notify:
+    needs: [build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - name: Resolve status and target
         id: notify
-        if: always()
         run: |
+          if [ "${{ needs.build.result }}" = "success" ] && [ "${{ needs.deploy.result }}" = "success" ]; then
+            echo "status=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=failure" >> "$GITHUB_OUTPUT"
+          fi
+
           if [ -n "$SLACK_WEBHOOK_URL" ]; then
             echo "target=slack" >> "$GITHUB_OUTPUT"
           else
@@ -63,9 +73,9 @@ jobs:
           fi
 
       - name: Notify Slack
-        if: ${{ always() && steps.notify.outputs.target == 'slack' }}
+        if: ${{ steps.notify.outputs.target == 'slack' }}
         env:
-          STATUS: ${{ job.status }}
+          STATUS: ${{ steps.notify.outputs.status }}
           REPO: ${{ github.repository }}
           REF_NAME: ${{ github.ref_name }}
           ACTOR: ${{ github.actor }}
@@ -86,9 +96,9 @@ jobs:
           curl -H 'Content-Type: application/json' -d "$PAYLOAD" "$SLACK_WEBHOOK_URL"
 
       - name: Notify Discord
-        if: ${{ always() && steps.notify.outputs.target == 'discord' }}
+        if: ${{ steps.notify.outputs.target == 'discord' }}
         env:
-          STATUS: ${{ job.status }}
+          STATUS: ${{ steps.notify.outputs.status }}
           REPO: ${{ github.repository }}
           REF_NAME: ${{ github.ref_name }}
           ACTOR: ${{ github.actor }}
