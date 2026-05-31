@@ -45,12 +45,15 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
 
       - name: Notify Slack
-        if: always()
+        if: ${{ always() && env.SLACK_WEBHOOK_URL != '' }}
         env:
           STATUS: ${{ job.status }}
           REPO: ${{ github.repository }}
@@ -58,7 +61,6 @@ jobs:
           ACTOR: ${{ github.actor }}
           SERVER_URL: ${{ github.server_url }}
           RUN_ID: ${{ github.run_id }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           COLOR=good
           [ "$STATUS" != "success" ] && COLOR=danger
@@ -72,3 +74,26 @@ jobs:
             '{attachments:[{color:$color,title:$title,title_link:$url,fields:[{title:"Branch",value:$branch,short:true},{title:"Triggered by",value:$actor,short:true}]}]}')
 
           curl -H 'Content-Type: application/json' -d "$PAYLOAD" "$SLACK_WEBHOOK_URL"
+
+      - name: Notify Discord
+        if: ${{ always() && env.SLACK_WEBHOOK_URL == '' }}
+        env:
+          STATUS: ${{ job.status }}
+          REPO: ${{ github.repository }}
+          REF_NAME: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+          SERVER_URL: ${{ github.server_url }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          COLOR=3066993
+          [ "$STATUS" != "success" ] && COLOR=15158332
+
+          PAYLOAD=$(jq -n \
+            --arg title "Deploy $STATUS: $REPO" \
+            --arg branch "$REF_NAME" \
+            --arg actor "$ACTOR" \
+            --arg url "$SERVER_URL/$REPO/actions/runs/$RUN_ID" \
+            --argjson color "$COLOR" \
+            '{embeds:[{title:$title,color:$color,fields:[{name:"Branch",value:$branch,inline:true},{name:"Triggered by",value:$actor,inline:true}],url:$url}]}')
+
+          curl -H 'Content-Type: application/json' -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
