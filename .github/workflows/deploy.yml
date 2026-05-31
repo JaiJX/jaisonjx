@@ -52,8 +52,18 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
 
+      - name: Select notification target
+        id: notify
+        if: always()
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            echo "target=slack" >> "$GITHUB_OUTPUT"
+          else
+            echo "target=discord" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Notify Slack
-        if: ${{ always() && env.SLACK_WEBHOOK_URL != '' }}
+        if: ${{ always() && steps.notify.outputs.target == 'slack' }}
         env:
           STATUS: ${{ job.status }}
           REPO: ${{ github.repository }}
@@ -76,7 +86,7 @@ jobs:
           curl -H 'Content-Type: application/json' -d "$PAYLOAD" "$SLACK_WEBHOOK_URL"
 
       - name: Notify Discord
-        if: ${{ always() && env.SLACK_WEBHOOK_URL == '' }}
+        if: ${{ always() && steps.notify.outputs.target == 'discord' }}
         env:
           STATUS: ${{ job.status }}
           REPO: ${{ github.repository }}
