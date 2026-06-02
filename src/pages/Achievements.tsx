@@ -1,15 +1,26 @@
 import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
 
-const timeline = [
-  { year: '2026', title: 'Lighting Designer', desc: 'Achieved MA university Completion certification', tag: 'Lighting' },
-  { year: '2025', title: 'Python 3 Course', desc: 'Completed the Python 3 course through Codecademy', tag: 'Development' },
-]
-
 const awards = [
   { medal: '🥇', name: 'Award Name', org: 'Organisation · Year' },
   { medal: '🏆', name: 'Award Name', org: 'Organisation · Year' },
   { medal: '⭐', name: 'Award Name', org: 'Organisation · Year' },
+]
+
+const certificates = [
+  { icon: '📜', name: 'MA University Completion', issuer: 'MA University', year: '2026' },
+  { icon: '🐍', name: 'Python 3 Course', issuer: 'Codecademy', year: '2025' },
+  { icon: '📜', name: 'Claude 101', issuer: 'Skilljar', year: '2026', url: 'https://verify.skilljar.com/c/ms772yxayv9n' },
+  { icon: '📜', name: 'Claude Code 101', issuer: 'Skilljar', year: '2026', url: 'https://verify.skilljar.com/c/n44iv8sscqky' },
+]
+
+const skills = [
+  'Lighting Design',
+  'Python',
+  'Photography',
+  'UI / UX Design',
+  'HTML & CSS',
+  'Figma',
 ]
 
 export default function Achievements() {
@@ -25,22 +36,49 @@ export default function Achievements() {
         </div>
 
         <div className="ach-layout fade-in-delay">
-          <section className="ach-section">
-            <h2 className="section-title">Timeline</h2>
-            <div className="timeline">
-              {timeline.map((item, i) => (
-                <div className="tl-item" key={i}>
-                  <div className="tl-dot" />
-                  <div className="tl-year">{item.year}</div>
-                  <div className="tl-card">
-                    <h3 className="tl-title">{item.title}</h3>
-                    <p className="tl-desc">{item.desc}</p>
-                    <span className="tl-tag">{item.tag}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <div className="ach-main">
+            <section className="ach-section">
+              <h2 className="section-title">Skills</h2>
+              <div className="skill-chips">
+                {skills.map((skill) => (
+                  <span className="skill-chip" key={skill}>{skill}</span>
+                ))}
+              </div>
+            </section>
+
+            <section className="ach-section">
+              <h2 className="section-title">Certificates</h2>
+              <div className="cert-grid">
+                {certificates.map((cert, i) => {
+                  const inner = (
+                    <>
+                      <div className="cert-icon">{cert.icon}</div>
+                      <div className="cert-body">
+                        <h3 className="cert-name">{cert.name}</h3>
+                        <div className="cert-issuer">{cert.issuer}</div>
+                      </div>
+                      <span className="cert-year">{cert.year}</span>
+                    </>
+                  )
+                  return cert.url ? (
+                    <a
+                      className="cert-card"
+                      key={i}
+                      href={cert.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    <div className="cert-card" key={i}>
+                      {inner}
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+          </div>
 
           <aside className="ach-aside">
             <section className="ach-section">
