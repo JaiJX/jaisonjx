@@ -102,7 +102,7 @@ export default function About() {
               </a>
             </div>
             <a
-              href="mailto:jaisonsjxj@gmail.com"
+              href="mailto:jaison@jaisonjx.me"
               className="btn-primary"
               style={{ display: 'inline-block', marginTop: 20, textDecoration: 'none' }}
             >
