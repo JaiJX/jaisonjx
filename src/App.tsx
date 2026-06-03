@@ -5,7 +5,9 @@ import About from './pages/About.tsx'
 import Achievements from './pages/Achievements.tsx'
 import Photography from './pages/Photography.tsx'
 import Projects from './pages/Projects.tsx'
+import BookTrackerLayout from './components/BookTrackerLayout.tsx'
 import BookTrackerApp from './pages/BookTrackerApp.tsx'
+import BookTrackerMyList from './pages/BookTrackerMyList.tsx'
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -34,7 +36,10 @@ export default function App() {
         <Route path="/achievements" element={<Achievements />} />
         <Route path="/photography" element={<Photography />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/book-tracker" element={<BookTrackerApp />} />
+        <Route path="/projects/book-tracker" element={<BookTrackerLayout />}>
+          <Route index element={<BookTrackerApp />} />
+          <Route path="my-list" element={<BookTrackerMyList />} />
+        </Route>
         <Route path="*" element={<Home />} />
       </Routes>
     </>
