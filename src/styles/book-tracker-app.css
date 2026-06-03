@@ -188,3 +188,234 @@
   background: rgba(230, 57, 70, 0.25);
   color: #fff;
 }
+
+/* ---- In-app navigation (Search / My List) ---- */
+.bt-app .bt-header {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.5rem;
+}
+
+.bt-app .bt-nav {
+  display: inline-flex;
+  gap: 0.5rem;
+  background: var(--dark-2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 0.35rem;
+}
+
+.bt-app .bt-navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.5rem 1.4rem;
+  border-radius: 40px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.bt-app .bt-navLink:hover {
+  color: var(--text);
+}
+
+.bt-app .bt-navLink.active {
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 0 18px var(--shadow-red);
+}
+
+.bt-app .bt-navBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.4rem;
+  border-radius: 50px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.bt-app .bt-navLink.active .bt-navBadge {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ---- Book cover wrapper ---- */
+.bt-app .bookCardCoverWrap {
+  width: 100%;
+}
+
+.bt-app .bookCardPlaceholder {
+  width: 100%;
+  height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  background: var(--dark-3);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+/* ---- Star rating ---- */
+.bt-app .starRating {
+  display: flex;
+  justify-content: center;
+  gap: 0.1rem;
+  margin: 0.5rem 0;
+}
+
+.bt-app .star {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--dark-3);
+  transition: color 0.15s, transform 0.15s;
+}
+
+.bt-app .star:hover {
+  transform: scale(1.15);
+}
+
+.bt-app .star.starFilled {
+  color: var(--red);
+}
+
+/* ---- Add to list button ---- */
+.bt-app .addToListBtn {
+  margin-top: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-hover);
+  border-radius: 40px;
+  background: rgba(230, 57, 70, 0.12);
+  color: var(--red-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.bt-app .addToListBtn:hover {
+  background: var(--red);
+  color: #fff;
+}
+
+.bt-app .addToListBtn.addToListBtnAdded,
+.bt-app .addToListBtn:disabled {
+  background: var(--dark-3);
+  color: var(--text-muted);
+  border-color: var(--border);
+  cursor: default;
+}
+
+/* ---- My List page ---- */
+.bt-app .myListPage .bt-top {
+  margin-bottom: 1rem;
+}
+
+.bt-app .myListEmpty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.bt-app .myListEmptyLink {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: var(--red-light);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.bt-app .myListEmptyLink:hover {
+  color: #fff;
+}
+
+.bt-app .myListGrid .savedBookCard {
+  width: 220px;
+  cursor: default;
+}
+
+.bt-app .myListGrid .savedBookCard:hover {
+  transform: none;
+}
+
+/* ---- Notes ---- */
+.bt-app .bookNotes {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 0.6rem;
+  text-align: left;
+}
+
+.bt-app .bookNotesLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.bt-app .bookNotesInput {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--dark-3);
+  color: var(--text);
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.bt-app .bookNotesInput:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 14px rgba(230, 57, 70, 0.22);
+}
+
+.bt-app .bookNotesInput::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* ---- Remove from list button ---- */
+.bt-app .removeFromListBtn {
+  margin-top: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.bt-app .removeFromListBtn:hover {
+  background: rgba(230, 57, 70, 0.15);
+  color: var(--red-light);
+  border-color: var(--border-hover);
+}
