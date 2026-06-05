@@ -8,20 +8,13 @@ import {
   decrementLike,
 } from '../lib/likes.ts'
 
-type Photo = { src: string; name: string }
+type Photo = { src: string; thumb: string; name: string }
+
+const CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+const cdnUrl = (id: string, transforms = '') =>
+  `https://res.cloudinary.com/${CLOUD}/image/upload/${transforms}${transforms ? '/' : ''}${id}`
 
 const stripExt = (name: string) => name.replace(/\.[^.]+$/, '')
-const baseName = (path: string) => path.split('/').pop() ?? path
-
-// Every image dropped into src/assets/photos/ is bundled automatically.
-const imported = import.meta.glob('../assets/photos/*.{jpg,jpeg,png,webp,gif,avif,JPG,JPEG,PNG,WEBP,GIF,AVIF}', {
-  eager: true,
-  import: 'default',
-}) as Record<string, string>
-
-const photos: Photo[] = Object.entries(imported)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([path, src]) => ({ src, name: baseName(path) }))
 
 const LIKED_KEY = 'jjx-liked-photos'
 
@@ -68,23 +61,32 @@ function LikeButton({
 }
 
 export default function Photography() {
+  const [photos, setPhotos] = useState<Photo[]>([])
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [counts, setCounts] = useState<Record<string, number>>({})
   const [liked, setLiked] = useState<Set<string>>(loadLiked)
 
   useEffect(() => {
+    if (!CLOUD) return
+    fetch('/photos.json')
+      .then(r => r.json())
+      .then((entries: { id: string; name: string }[]) => {
+        setPhotos(entries.map(({ id, name }) => ({
+          src: cdnUrl(id, 'q_auto,f_auto'),
+          thumb: cdnUrl(id, 'w_800,c_limit,q_auto,f_auto'),
+          name,
+        })))
+      })
+      .catch(() => setPhotos([]))
+  }, [])
+
+  useEffect(() => {
     if (!likesEnabled) return
     let active = true
     fetchLikeCounts()
-      .then((data) => {
-        if (active) setCounts(data)
-      })
-      .catch(() => {
-        /* leave counts at 0 if the API is unreachable */
-      })
-    return () => {
-      active = false
-    }
+      .then((data) => { if (active) setCounts(data) })
+      .catch(() => { /* leave counts at 0 if the API is unreachable */ })
+    return () => { active = false }
   }, [])
 
   const toggleLike = useCallback(
@@ -109,7 +111,6 @@ export default function Photography() {
           setCounts((prev) => ({ ...prev, [id]: serverCount }))
         })
         .catch(() => {
-          // Revert the optimistic update on failure.
           setLiked((prev) => {
             const next = new Set(prev)
             if (wasLiked) next.add(id)
@@ -129,11 +130,11 @@ export default function Photography() {
   const closeLightbox = useCallback(() => setLightboxIndex(null), [])
   const showNext = useCallback(
     () => setLightboxIndex((i) => (i === null ? i : (i + 1) % photos.length)),
-    [],
+    [photos.length],
   )
   const showPrev = useCallback(
     () => setLightboxIndex((i) => (i === null ? i : (i - 1 + photos.length) % photos.length)),
-    [],
+    [photos.length],
   )
 
   useEffect(() => {
@@ -177,7 +178,7 @@ export default function Photography() {
           ) : (
             photos.map((photo, index) => (
               <div className="photo-item" key={photo.name} onClick={() => setLightboxIndex(index)}>
-                <img src={photo.src} alt={stripExt(photo.name)} loading="lazy" />
+                <img src={photo.thumb} alt={stripExt(photo.name)} loading="lazy" />
                 <div className="photo-overlay">
                   <span className="photo-name">{stripExt(photo.name)}</span>
                 </div>
@@ -200,9 +201,7 @@ export default function Photography() {
 
       <div
         className={'lightbox' + (current ? ' open' : '')}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) closeLightbox()
-        }}
+        onClick={(e) => { if (e.target === e.currentTarget) closeLightbox() }}
       >
         <button className="lb-close" type="button" onClick={closeLightbox}>✕</button>
         <button className="lb-prev" type="button" onClick={showPrev}>‹</button>
