@@ -215,7 +215,20 @@ export default function Photography() {
             </div>
           ) : (
             photos.map((photo, index) => (
-              <div className="photo-item" key={photo.id} onClick={() => setLightboxIndex(index)}>
+              <div
+                className="photo-item"
+                key={photo.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${stripExt(photo.name)}`}
+                onClick={() => setLightboxIndex(index)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setLightboxIndex(index)
+                  }
+                }}
+              >
                 {photo.kind === 'video' ? (
                   <video src={photo.src} muted loop playsInline preload="metadata" />
                 ) : (

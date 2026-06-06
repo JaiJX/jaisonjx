@@ -552,7 +552,7 @@ body {
 .edu-school span { color: #FF6B1A; }
 
 /* Awards */
-.awards-list { display: none; flex-direction: column; gap: 12px; }
+.awards-list { display: flex; flex-direction: column; gap: 12px; }
 
 .award-item {
     display: flex;
