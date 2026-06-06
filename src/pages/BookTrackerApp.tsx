@@ -1,59 +1,59 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useBookSearch } from '../hooks/useBookSearch'
-import '../styles/book-tracker-app.css'
+import { useState } from 'react'
+import BookCard from '../components/BookCard'
+import { useBookSearch, type Book } from '../hooks/useBookSearch'
+import { useBookStorageContext } from '../context/BookStorageContext'
+import { getBookCoverUrl } from '../utils/bookImages'
 
-/** Full-screen dark-themed Book Finder page accessible at /projects/book-tracker. */
+/** Search page of the full Book Finder app at /projects/book-tracker. */
 export default function BookTrackerApp() {
   const [query, setQuery] = useState('')
   const { books, error, loading } = useBookSearch(query)
+  const { ratings, rateBook, addToList, isInList } = useBookStorageContext()
 
-  useEffect(() => {
-    const prevBackground = document.body.style.background
-    document.body.style.background = '#0D0D14'
-    return () => { document.body.style.background = prevBackground }
-  }, [])
+  const handleAddToList = (book: Book) => {
+    addToList({
+      id: book.id,
+      title: book.volumeInfo.title,
+      authors: book.volumeInfo.authors,
+      thumbnail: getBookCoverUrl(book.volumeInfo.imageLinks, book.id),
+    })
+  }
 
   return (
-    <div className="bt-app">
-      <Link to="/projects" className="bt-back">← Back to Projects</Link>
-      <main>
-        <div className="bt-top">
-          <img className="image" src="/Books.svg" alt="Book Icon" />
-          <h1>Book Finder</h1>
-        </div>
-        <div className="bt-bottom">
-          <h2>Find a Book</h2>
-          <div className="search">
-            <div>
-              <input
-                id="book-search"
-                type="text"
-                placeholder="Search for a book"
-                aria-label="Search for a book"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-              />
-            </div>
+    <main>
+      <div className="bt-top">
+        <img className="image" src="/Books.svg" alt="Book Icon" />
+        <h1>Book Finder</h1>
+      </div>
+      <div className="bt-bottom">
+        <h2>Find a Book</h2>
+        <div className="search">
+          <div>
+            <input
+              id="book-search"
+              type="text"
+              placeholder="Search for a book"
+              aria-label="Search for a book"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+            />
           </div>
-          <section className="allBooks">
-            {loading && <p style={{ color: '#9CA3AF' }}>Searching...</p>}
-            {!loading && books.map(book => (
-              <article key={book.id} className="bookCard">
-                {book.volumeInfo.imageLinks?.thumbnail && (
-                  <img
-                    src={book.volumeInfo.imageLinks.thumbnail}
-                    alt={book.volumeInfo.title}
-                  />
-                )}
-                <h3>{book.volumeInfo.title}</h3>
-                <p>{book.volumeInfo.authors?.join(', ') ?? 'Unknown Author'}</p>
-              </article>
-            ))}
-            {!loading && error && <p className="error">{error}</p>}
-          </section>
         </div>
-      </main>
-    </div>
+        <section className="allBooks">
+          {loading && <p style={{ color: '#9CA3AF' }}>Searching...</p>}
+          {!loading && books.map(book => (
+            <BookCard
+              key={book.id}
+              book={book}
+              rating={ratings[book.id] ?? 0}
+              onRate={rating => rateBook(book.id, rating)}
+              isInList={isInList(book.id)}
+              onAddToList={() => handleAddToList(book)}
+            />
+          ))}
+          {!loading && error && <p className="error">{error}</p>}
+        </section>
+      </div>
+    </main>
   )
 }

@@ -8,20 +8,40 @@ import {
   decrementLike,
 } from '../lib/likes.ts'
 
-type Photo = { src: string; name: string }
+type Kind = 'image' | 'video'
+type Photo = { id: string; src: string; name: string; kind: Kind }
+
+const CLOUD = 'dfsto9h0v'
+// Tag every asset you want in the gallery with this in Cloudinary, and it shows
+// up here automatically — no code change, images and videos alike.
+const GALLERY_TAG = 'portfolio'
 
 const stripExt = (name: string) => name.replace(/\.[^.]+$/, '')
-const baseName = (path: string) => path.split('/').pop() ?? path
 
-// Every image dropped into src/assets/photos/ is bundled automatically.
-const imported = import.meta.glob('../assets/photos/*.{jpg,jpeg,png,webp,gif,avif,JPG,JPEG,PNG,WEBP,GIF,AVIF}', {
-  eager: true,
-  import: 'default',
-}) as Record<string, string>
+// Cloudinary appends a random 6-char suffix (e.g. Macarons_tzupkx). Strip it for
+// a clean caption; names without a suffix (use_filename uploads) are left as-is.
+const displayName = (publicId: string) =>
+  (publicId.split('/').pop() ?? publicId).replace(/_[a-z0-9]{6}$/i, '')
 
-const photos: Photo[] = Object.entries(imported)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([path, src]) => ({ src, name: baseName(path) }))
+type CldResource = { public_id: string; version: number; format: string }
+
+// Fetch the public list of assets carrying GALLERY_TAG for a given media kind.
+// Requires "Resource list" delivery to be enabled in Cloudinary settings.
+async function fetchList(kind: Kind): Promise<Photo[]> {
+  const res = await fetch(
+    `https://res.cloudinary.com/${CLOUD}/${kind}/list/${GALLERY_TAG}.json`,
+  )
+  if (!res.ok) return []
+  const data = (await res.json()) as { resources?: CldResource[] }
+  return (data.resources ?? []).map((r) => ({
+    id: r.public_id,
+    kind,
+    name: displayName(r.public_id),
+    // f_auto picks the best format (WebP/AVIF for images, mp4/webm for video),
+    // q_auto picks the best quality/compression. Looks the same, far smaller.
+    src: `https://res.cloudinary.com/${CLOUD}/${kind}/upload/f_auto,q_auto/v${r.version}/${r.public_id}.${r.format}`,
+  }))
+}
 
 const LIKED_KEY = 'jjx-liked-photos'
 
@@ -68,9 +88,27 @@ function LikeButton({
 }
 
 export default function Photography() {
+  const [photos, setPhotos] = useState<Photo[]>([])
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [counts, setCounts] = useState<Record<string, number>>({})
   const [liked, setLiked] = useState<Set<string>>(loadLiked)
+
+  // Discover gallery assets (images + videos) from Cloudinary on mount.
+  useEffect(() => {
+    let active = true
+    Promise.all([fetchList('image'), fetchList('video')])
+      .then(([images, videos]) => {
+        if (!active) return
+        const all = [...images, ...videos].sort((a, b) => a.name.localeCompare(b.name))
+        setPhotos(all)
+      })
+      .catch((err) => {
+        console.error('[gallery] failed to load assets from Cloudinary', err)
+      })
+    return () => {
+      active = false
+    }
+  }, [])
 
   useEffect(() => {
     if (!likesEnabled) return
@@ -130,11 +168,11 @@ export default function Photography() {
   const closeLightbox = useCallback(() => setLightboxIndex(null), [])
   const showNext = useCallback(
     () => setLightboxIndex((i) => (i === null ? i : (i + 1) % photos.length)),
-    [],
+    [photos.length],
   )
   const showPrev = useCallback(
     () => setLightboxIndex((i) => (i === null ? i : (i - 1 + photos.length) % photos.length)),
-    [],
+    [photos.length],
   )
 
   useEffect(() => {
@@ -177,19 +215,36 @@ export default function Photography() {
             </div>
           ) : (
             photos.map((photo, index) => (
-              <div className="photo-item" key={photo.name} onClick={() => setLightboxIndex(index)}>
-                <img src={photo.src} alt={stripExt(photo.name)} loading="lazy" />
+              <div
+                className="photo-item"
+                key={photo.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${stripExt(photo.name)}`}
+                onClick={() => setLightboxIndex(index)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setLightboxIndex(index)
+                  }
+                }}
+              >
+                {photo.kind === 'video' ? (
+                  <video src={photo.src} muted loop playsInline preload="metadata" />
+                ) : (
+                  <img src={photo.src} alt={stripExt(photo.name)} loading="lazy" />
+                )}
                 <div className="photo-overlay">
                   <span className="photo-name">{stripExt(photo.name)}</span>
                 </div>
                 {likesEnabled && (
                   <LikeButton
                     className="photo-like"
-                    count={counts[photo.name] ?? 0}
-                    liked={liked.has(photo.name)}
+                    count={counts[photo.id] ?? 0}
+                    liked={liked.has(photo.id)}
                     onClick={(e) => {
                       e.stopPropagation()
-                      toggleLike(photo.name)
+                      toggleLike(photo.id)
                     }}
                   />
                 )}
@@ -209,16 +264,21 @@ export default function Photography() {
         <button className="lb-prev" type="button" onClick={showPrev}>‹</button>
         <button className="lb-next" type="button" onClick={showNext}>›</button>
         <div className="lb-img-wrap">
-          {current && <img className="lb-img" src={current.src} alt={current.name} />}
+          {current &&
+            (current.kind === 'video' ? (
+              <video className="lb-img" src={current.src} controls autoPlay loop playsInline />
+            ) : (
+              <img className="lb-img" src={current.src} alt={current.name} />
+            ))}
           <div className="lb-caption">{current ? stripExt(current.name) : ''}</div>
           {likesEnabled && current && (
             <LikeButton
               className="lb-like"
-              count={counts[current.name] ?? 0}
-              liked={liked.has(current.name)}
+              count={counts[current.id] ?? 0}
+              liked={liked.has(current.id)}
               onClick={(e) => {
                 e.stopPropagation()
-                toggleLike(current.name)
+                toggleLike(current.id)
               }}
             />
           )}
