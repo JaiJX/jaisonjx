@@ -1,11 +1,8 @@
 import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
 
-const awards = [
-  { medal: '🥇', name: 'Award Name', org: 'Organisation · Year' },
-  { medal: '🏆', name: 'Award Name', org: 'Organisation · Year' },
-  { medal: '⭐', name: 'Award Name', org: 'Organisation · Year' },
-]
+// Add awards here to show the Awards section; empty hides it.
+const awards: { medal: string; name: string; org: string }[] = []
 
 const certificates = [
   { icon: '📜', name: 'MA University Completion', issuer: 'MA University', year: '2026' },
@@ -101,20 +98,22 @@ export default function Achievements() {
               </div>
             </section>
 
-            <section className="ach-section">
-              <h2 className="section-title">Awards</h2>
-              <div className="awards-list">
-                {awards.map((award, i) => (
-                  <div className="award-item" key={i}>
-                    <span className="award-medal">{award.medal}</span>
-                    <div>
-                      <div className="award-name">{award.name}</div>
-                      <div className="award-org">{award.org}</div>
+            {awards.length > 0 && (
+              <section className="ach-section">
+                <h2 className="section-title">Awards</h2>
+                <div className="awards-list">
+                  {awards.map((award, i) => (
+                    <div className="award-item" key={i}>
+                      <span className="award-medal">{award.medal}</span>
+                      <div>
+                        <div className="award-name">{award.name}</div>
+                        <div className="award-org">{award.org}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+              </section>
+            )}
           </aside>
         </div>
       </div>
