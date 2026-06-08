@@ -11,7 +11,7 @@ import {
 type Kind = 'image' | 'video'
 type Photo = { id: string; src: string; name: string; kind: Kind }
 
-const CLOUD = 'dfsto9h0v'
+const CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME as string
 // Tag every asset you want in the gallery with this in Cloudinary, and it shows
 // up here automatically — no code change, images and videos alike.
 const GALLERY_TAG = 'portfolio'
