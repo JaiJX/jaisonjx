@@ -2,6 +2,7 @@ import Background from '../components/Background.tsx'
 import Nav from '../components/Nav.tsx'
 
 const timeline = [
+  { year: '2026', title: 'Cyber Security 101', desc: 'Completed the Cyber Security 101 Learning Path on TryHackMe (45 hrs 23 min)', tag: 'Security' },
   { year: '2026', title: 'Lighting Designer', desc: 'Achieved MA university Completion certification', tag: 'Lighting' },
   { year: '2025', title: 'Python 3 Course', desc: 'Completed the Python 3 course through Codecademy', tag: 'Development' },
 ]
