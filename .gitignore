@@ -20,6 +20,15 @@ dist-ssr
 # Claude local settings (machine-specific)
 .claude/settings.local.json
 
+# Photos/videos are served from Cloudinary now — don't commit local media assets
+src/assets/photos/
+
+# Cloudinary onboarding script — contains API secret, never commit
+/cloudinary-onboarding.ts
+
+# Windows Explorer metadata
+desktop.ini
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

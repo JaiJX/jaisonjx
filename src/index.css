@@ -106,6 +106,13 @@ body {
     justify-content: center;
 }
 
+.avatar-logo {
+    width: clamp(56px,6.5vw,120px);
+    height: clamp(56px,6.5vw,120px);
+    border-radius: 50%;
+    display: block;
+}
+
 .avatar-inner {
     width: calc(clamp(56px,6.5vw,120px) - 12px);
     height: calc(clamp(56px,6.5vw,120px) - 12px);
@@ -545,7 +552,7 @@ body {
 .edu-school span { color: #FF6B1A; }
 
 /* Awards */
-.awards-list { display: none; flex-direction: column; gap: 12px; }
+.awards-list { display: flex; flex-direction: column; gap: 12px; }
 
 .award-item {
     display: flex;
@@ -569,6 +576,63 @@ body {
 .award-org {
     font-size: 12px;
     color: #9a5c2e;
+}
+
+/* Certificates */
+.cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+}
+
+.cert-card {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(232,93,4,0.12);
+    border-radius: 14px;
+    padding: 14px 18px;
+}
+
+.cert-icon { font-size: 24px; flex-shrink: 0; }
+
+.cert-body { flex: 1; min-width: 0; }
+
+.cert-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a0a00;
+    margin: 0 0 3px;
+}
+
+.cert-issuer {
+    font-size: 12px;
+    color: #9a5c2e;
+}
+
+.cert-year {
+    font-size: 12px;
+    font-weight: 500;
+    color: #FF6B1A;
+    flex-shrink: 0;
+}
+
+/* Skills */
+.skill-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-chip {
+    font-size: 13px;
+    font-weight: 500;
+    color: #9a5c2e;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(232,93,4,0.12);
+    border-radius: 999px;
+    padding: 8px 16px;
 }
 
 /* ─── Photography page ────────────────────────── */
