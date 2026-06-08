@@ -11,7 +11,7 @@ import {
 type Kind = 'image' | 'video'
 type Photo = { id: string; src: string; name: string; kind: Kind }
 
-const CLOUD = 'dfsto9h0v'
+const CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME ?? 'dfsto9h0v'
 // Tag every asset you want in the gallery with this in Cloudinary, and it shows
 // up here automatically — no code change, images and videos alike.
 const GALLERY_TAG = 'portfolio'
@@ -25,8 +25,7 @@ const displayName = (publicId: string) =>
 
 type CldResource = { public_id: string; version: number; format: string }
 
-// Fetch the public list of assets carrying GALLERY_TAG for a given media kind.
-// Requires "Resource list" delivery to be enabled in Cloudinary settings.
+/** Fetch the public list of assets carrying GALLERY_TAG for a given media kind. */
 async function fetchList(kind: Kind): Promise<Photo[]> {
   const res = await fetch(
     `https://res.cloudinary.com/${CLOUD}/${kind}/list/${GALLERY_TAG}.json`,
@@ -45,6 +44,7 @@ async function fetchList(kind: Kind): Promise<Photo[]> {
 
 const LIKED_KEY = 'jjx-liked-photos'
 
+/** Load persisted liked photo IDs from localStorage. */
 function loadLiked(): Set<string> {
   try {
     const raw = localStorage.getItem(LIKED_KEY)
@@ -54,6 +54,7 @@ function loadLiked(): Set<string> {
   }
 }
 
+/** Persist liked photo IDs to localStorage. */
 function persistLiked(set: Set<string>) {
   try {
     localStorage.setItem(LIKED_KEY, JSON.stringify([...set]))
@@ -62,6 +63,7 @@ function persistLiked(set: Set<string>) {
   }
 }
 
+/** Heart button that displays like count and toggles liked state. */
 function LikeButton({
   count,
   liked,
@@ -87,6 +89,7 @@ function LikeButton({
   )
 }
 
+/** Photography gallery page with lightbox and optional like counts. */
 export default function Photography() {
   const [photos, setPhotos] = useState<Photo[]>([])
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
@@ -114,15 +117,9 @@ export default function Photography() {
     if (!likesEnabled) return
     let active = true
     fetchLikeCounts()
-      .then((data) => {
-        if (active) setCounts(data)
-      })
-      .catch(() => {
-        /* leave counts at 0 if the API is unreachable */
-      })
-    return () => {
-      active = false
-    }
+      .then((data) => { if (active) setCounts(data) })
+      .catch(() => { /* leave counts at 0 if the API is unreachable */ })
+    return () => { active = false }
   }, [])
 
   const toggleLike = useCallback(
@@ -256,9 +253,7 @@ export default function Photography() {
 
       <div
         className={'lightbox' + (current ? ' open' : '')}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) closeLightbox()
-        }}
+        onClick={(e) => { if (e.target === e.currentTarget) closeLightbox() }}
       >
         <button className="lb-close" type="button" onClick={closeLightbox}>✕</button>
         <button className="lb-prev" type="button" onClick={showPrev}>‹</button>

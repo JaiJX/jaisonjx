@@ -9,6 +9,7 @@ const certificates = [
   { icon: '🐍', name: 'Python 3 Course', issuer: 'Codecademy', year: '2025' },
   { icon: '📜', name: 'Claude 101', issuer: 'Skilljar', year: '2026', url: 'https://verify.skilljar.com/c/ms772yxayv9n' },
   { icon: '📜', name: 'Claude Code 101', issuer: 'Skilljar', year: '2026', url: 'https://verify.skilljar.com/c/n44iv8sscqky' },
+  { icon: '🔒', name: 'Cyber Security 101', issuer: 'TryHackMe', year: '2026' },
 ]
 
 const skills = [
@@ -20,6 +21,7 @@ const skills = [
   'Figma',
 ]
 
+/** Achievements page showing certificates, skills, education, and awards. */
 export default function Achievements() {
   return (
     <div className="pf-wrap page-scroll">
