@@ -30,7 +30,7 @@ export default function Achievements() {
 
       <div className="page-content">
         <div className="page-header fade-in">
-          <div className="pf-tag">Milestones</div>
+          <div className="pf-tag">Milestones &amp; merits</div>
           <h1 className="pf-name">Achieve<span>ments</span></h1>
         </div>
 

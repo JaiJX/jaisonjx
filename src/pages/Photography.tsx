@@ -201,14 +201,15 @@ export default function Photography() {
           <div className="pf-tag">Through the lens</div>
           <h1 className="pf-name">Photo<span>graphy</span></h1>
           <p className="pf-bio" style={{ maxWidth: 480, marginTop: 8 }}>
-            A collection of moments I've captured. Click any photo to view it full size.
+            A quiet archive of light and timing — moments collected, never staged.
+            Select any frame to view it in full.
           </p>
         </div>
 
         <div className="photo-grid fade-in-delay">
           {photos.length === 0 ? (
             <div className="gallery-empty">
-              <p>No photos to show yet — check back soon.</p>
+              <p>The gallery awaits its first frame — return soon.</p>
             </div>
           ) : (
             photos.map((photo, index) => (
