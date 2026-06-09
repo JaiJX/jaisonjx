@@ -1066,4 +1066,31 @@ body {
     .photo-grid { columns: 2 160px; }
     .lb-prev { left: 6px; }
     .lb-next { right: 6px; }
+    /* Reduce blur cost on small / low-end screens */
+    .bubble { filter: blur(32px); }
+}
+
+/* ─── Reduced-motion accessibility ───────────────
+   Elements that start at opacity:0 and become
+   visible only through animation would remain
+   invisible for users who prefer reduced motion.
+   Force them visible and skip all transitions.    */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .bubble,
+    .pf-nav,
+    .avatar-wrap,
+    .pf-content,
+    .fade-in,
+    .fade-in-delay {
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }
