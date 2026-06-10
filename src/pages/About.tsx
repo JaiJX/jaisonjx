@@ -28,7 +28,7 @@ export default function About() {
 
       <div className="page-content">
         <div className="page-header fade-in">
-          <div className="pf-tag">Who I am</div>
+          <div className="pf-tag">The person behind the work</div>
           <h1 className="pf-name">About <span>Me</span></h1>
         </div>
 
@@ -42,13 +42,14 @@ export default function About() {
             <h2 className="about-name">Jaison Jiji</h2>
             <p className="about-role">Product Designer &amp; Creative Developer</p>
             <p className="about-bio">
-              Hey! I'm Jaison — a designer and developer who believes great products
-              come from understanding people first. I love working at the intersection
-              of design and technology, building things that are both beautiful and useful.
+              I'm Jaison — a designer and developer who believes the finest products
+              are built on empathy first. I work where aesthetics meet engineering,
+              shaping ideas into experiences that feel considered, deliberate, and
+              quietly luxurious.
             </p>
             <p className="about-bio">
-              When I'm not at a screen, I'm usually out with my camera, chasing light
-              and finding stories in everyday moments.
+              Away from the screen, you'll find me behind a camera — hunting golden
+              light and the small, unrepeatable moments most people walk past.
             </p>
           </div>
 
@@ -77,7 +78,9 @@ export default function About() {
 
           <div className="about-card" id="contact">
             <h3 className="card-title">Get in Touch</h3>
-            <p className="contact-sub">Have a project in mind or just want to say hi?</p>
+            <p className="contact-sub">
+              Have a project in mind, or simply wish to say hello? My door is always open.
+            </p>
             <div className="contact-links">
               <a href="https://www.instagram.com/jjaison_jiji/" className="contact-row">
                 <span className="contact-icon">📸</span>
@@ -106,7 +109,7 @@ export default function About() {
               className="btn-primary"
               style={{ display: 'inline-block', marginTop: 20, textDecoration: 'none' }}
             >
-              Say Hello
+              Write to Me
             </a>
           </div>
         </div>

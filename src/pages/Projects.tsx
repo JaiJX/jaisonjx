@@ -26,7 +26,7 @@ function BookTracker() {
       {loading && <p className="bt-status">Searching...</p>}
       {!loading && error && <p className="bt-status">{error}</p>}
       {!loading && !error && books.length === 0 && query.trim() === '' && (
-        <p className="bt-status bt-hint">Type a title, author, or topic to get started.</p>
+        <p className="bt-status bt-hint">Begin with a title, an author, or simply an idea.</p>
       )}
 
       <div className="bt-grid">
@@ -65,9 +65,9 @@ export default function Projects() {
 
       <div className="page-content">
         <div className="page-header fade-in">
-          <div className="pf-tag">My Work</div>
-          <h1 className="pf-name">Projects</h1>
-          <p className="pf-title">Things I have built while learning and exploring.</p>
+          <div className="pf-tag">Selected works</div>
+          <h1 className="pf-name">Pro<span>jects</span></h1>
+          <p className="pf-title">A curated collection of things designed, built, and refined.</p>
         </div>
 
         <div className="fade-in-delay">
@@ -76,9 +76,9 @@ export default function Projects() {
               <div>
                 <h2 className="proj-name">Book Finder</h2>
                 <p className="proj-desc">
-                  A React app that lets you search millions of books via the Google Books API.
-                  Built as part of my React learning journey to practice hooks, async data
-                  fetching, and component composition.
+                  An elegant search across millions of titles, powered by the Google Books
+                  API. Built to master React hooks, async data flows, and component
+                  composition — then polished until finding a book feels effortless.
                 </p>
                 <div className="proj-tags">
                   {tags.map(t => <span key={t} className="interest-chip">{t}</span>)}
