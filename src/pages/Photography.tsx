@@ -11,7 +11,9 @@ import {
 type Kind = 'image' | 'video'
 type Photo = { id: string; src: string; name: string; kind: Kind }
 
-const CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME ?? 'dfsto9h0v'
+// `||` (not `??`) so the fallback also covers CI builds where the variable
+// exists but is empty (an unset `vars.CLOUDINARY_CLOUD_NAME` in Actions).
+const CLOUD = (import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '').trim() || 'dfsto9h0v'
 // Tag every asset you want in the gallery with this in Cloudinary, and it shows
 // up here automatically — no code change, images and videos alike.
 const GALLERY_TAG = 'portfolio'
@@ -25,14 +27,26 @@ const displayName = (publicId: string) =>
 
 type CldResource = { public_id: string; version: number; format: string }
 
+type ListResult = { photos: Photo[]; failed: boolean }
+
 /** Fetch the public list of assets carrying GALLERY_TAG for a given media kind. */
-async function fetchList(kind: Kind): Promise<Photo[]> {
+async function fetchList(kind: Kind): Promise<ListResult> {
   const res = await fetch(
     `https://res.cloudinary.com/${CLOUD}/${kind}/list/${GALLERY_TAG}.json`,
   )
-  if (!res.ok) return []
+  if (!res.ok) {
+    // 404 just means no asset of this kind carries the tag — a legit empty
+    // gallery. Anything else (commonly 401) means the "Resource list"
+    // delivery type is still blocked in Cloudinary Settings → Security.
+    if (res.status === 404) return { photos: [], failed: false }
+    console.error(
+      `[gallery] Cloudinary ${kind} list returned HTTP ${res.status} — ` +
+        'check that "Resource list" is enabled under Settings → Security and the cloud name is correct',
+    )
+    return { photos: [], failed: true }
+  }
   const data = (await res.json()) as { resources?: CldResource[] }
-  return (data.resources ?? []).map((r) => ({
+  const photos = (data.resources ?? []).map((r) => ({
     id: r.public_id,
     kind,
     name: displayName(r.public_id),
@@ -40,6 +54,7 @@ async function fetchList(kind: Kind): Promise<Photo[]> {
     // q_auto picks the best quality/compression. Looks the same, far smaller.
     src: `https://res.cloudinary.com/${CLOUD}/${kind}/upload/f_auto,q_auto/v${r.version}/${r.public_id}.${r.format}`,
   }))
+  return { photos, failed: false }
 }
 
 const LIKED_KEY = 'jjx-liked-photos'
@@ -92,6 +107,7 @@ function LikeButton({
 /** Photography gallery page with lightbox and optional like counts. */
 export default function Photography() {
   const [photos, setPhotos] = useState<Photo[]>([])
+  const [loadFailed, setLoadFailed] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [counts, setCounts] = useState<Record<string, number>>({})
   const [liked, setLiked] = useState<Set<string>>(loadLiked)
@@ -102,11 +118,15 @@ export default function Photography() {
     Promise.all([fetchList('image'), fetchList('video')])
       .then(([images, videos]) => {
         if (!active) return
-        const all = [...images, ...videos].sort((a, b) => a.name.localeCompare(b.name))
+        const all = [...images.photos, ...videos.photos].sort((a, b) =>
+          a.name.localeCompare(b.name),
+        )
         setPhotos(all)
+        setLoadFailed(all.length === 0 && (images.failed || videos.failed))
       })
       .catch((err) => {
         console.error('[gallery] failed to load assets from Cloudinary', err)
+        if (active) setLoadFailed(true)
       })
     return () => {
       active = false
@@ -209,7 +229,11 @@ export default function Photography() {
         <div className="photo-grid fade-in-delay">
           {photos.length === 0 ? (
             <div className="gallery-empty">
-              <p>The gallery awaits its first frame — return soon.</p>
+              <p>
+                {loadFailed
+                  ? 'The gallery could not be loaded — please try again shortly.'
+                  : 'The gallery awaits its first frame — return soon.'}
+              </p>
             </div>
           ) : (
             photos.map((photo, index) => (
