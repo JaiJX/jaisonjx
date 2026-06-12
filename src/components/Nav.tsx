@@ -1,26 +1,64 @@
-import { NavLink } from 'react-router-dom'
+import type { CSSProperties } from 'react'
+import { NavLink, Link } from 'react-router-dom'
+
+import { cn } from '@/lib/utils'
 
 const links = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
-  { to: '/achievements', label: 'Achievements' },
-  { to: '/photography', label: 'Photography' },
-  { to: '/projects', label: 'Projects' },
+  { to: '/', label: 'Home', index: '01' },
+  { to: '/about', label: 'About', index: '02' },
+  { to: '/achievements', label: 'Achievements', index: '03' },
+  { to: '/photography', label: 'Photography', index: '04' },
+  { to: '/projects', label: 'Projects', index: '05' },
 ]
 
 export default function Nav() {
   return (
-    <nav className="pf-nav">
-      {links.map(({ to, label }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={to === '/'}
-          className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
+    <header
+      className="boot fixed inset-x-0 top-0 z-50"
+      style={{ '--boot-delay': '0.1s' } as CSSProperties}
+    >
+      <nav
+        aria-label="Primary"
+        className="flex items-center justify-between gap-4 border-b border-border bg-background/70 px-4 py-3 backdrop-blur-md md:px-10"
+      >
+        <Link
+          to="/"
+          className="display glitch-hover text-xl text-ink no-underline md:text-2xl"
+          aria-label="Jaison Jiji — home"
         >
-          {label}
-        </NavLink>
-      ))}
-    </nav>
+          JJ<span className="text-primary">X</span>
+        </Link>
+
+        <ul className="flex list-none flex-wrap items-center justify-end gap-x-5 gap-y-1 md:gap-x-8">
+          {links.map(({ to, label, index }) => (
+            <li key={to}>
+              <NavLink
+                to={to}
+                end={to === '/'}
+                className={({ isActive }) =>
+                  cn(
+                    'group relative flex items-baseline gap-1.5 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.18em] no-underline transition-colors duration-200',
+                    isActive ? 'text-primary' : 'text-muted-foreground hover:text-ink',
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <span className="hidden text-[9px] opacity-50 sm:inline">{index}</span>
+                    {label}
+                    <span
+                      className={cn(
+                        'absolute -bottom-px left-0 h-0.5 bg-primary transition-all duration-300 clip-blade',
+                        isActive ? 'w-full' : 'w-0 group-hover:w-full',
+                      )}
+                    />
+                  </>
+                )}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
   )
 }
