@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import Background from '../components/Background.tsx'
-import Nav from '../components/Nav.tsx'
-import {
-  likesEnabled,
-  fetchLikeCounts,
-  incrementLike,
-  decrementLike,
-} from '../lib/likes.ts'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+
+import PageShell, { PageHeader } from '@/components/PageShell.tsx'
+import Reveal from '@/components/Reveal.tsx'
+import { cn } from '@/lib/utils'
 
 type Kind = 'image' | 'video'
 type Photo = { id: string; src: string; name: string; kind: Kind }
@@ -57,60 +54,10 @@ async function fetchList(kind: Kind): Promise<ListResult> {
   return { photos, failed: false }
 }
 
-const LIKED_KEY = 'jjx-liked-photos'
-
-/** Load persisted liked photo IDs from localStorage. */
-function loadLiked(): Set<string> {
-  try {
-    const raw = localStorage.getItem(LIKED_KEY)
-    return new Set(raw ? (JSON.parse(raw) as string[]) : [])
-  } catch {
-    return new Set()
-  }
-}
-
-/** Persist liked photo IDs to localStorage. */
-function persistLiked(set: Set<string>) {
-  try {
-    localStorage.setItem(LIKED_KEY, JSON.stringify([...set]))
-  } catch {
-    /* ignore storage failures (private mode, etc.) */
-  }
-}
-
-/** Heart button that displays like count and toggles liked state. */
-function LikeButton({
-  count,
-  liked,
-  onClick,
-  className,
-}: {
-  count: number
-  liked: boolean
-  onClick: (e: React.MouseEvent) => void
-  className: string
-}) {
-  return (
-    <button
-      type="button"
-      className={`like-btn ${className}${liked ? ' liked' : ''}`}
-      onClick={onClick}
-      aria-pressed={liked}
-      aria-label={liked ? 'Unlike photo' : 'Like photo'}
-    >
-      <span className="heart">{liked ? '♥' : '♡'}</span>
-      <span className="like-count">{count}</span>
-    </button>
-  )
-}
-
-/** Photography gallery page with lightbox and optional like counts. */
 export default function Photography() {
   const [photos, setPhotos] = useState<Photo[]>([])
-  const [loadFailed, setLoadFailed] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
-  const [counts, setCounts] = useState<Record<string, number>>({})
-  const [liked, setLiked] = useState<Set<string>>(loadLiked)
+  const [loadFailed, setLoadFailed] = useState(false)
 
   // Discover gallery assets (images + videos) from Cloudinary on mount.
   useEffect(() => {
@@ -132,55 +79,6 @@ export default function Photography() {
       active = false
     }
   }, [])
-
-  useEffect(() => {
-    if (!likesEnabled) return
-    let active = true
-    fetchLikeCounts()
-      .then((data) => { if (active) setCounts(data) })
-      .catch(() => { /* leave counts at 0 if the API is unreachable */ })
-    return () => { active = false }
-  }, [])
-
-  const toggleLike = useCallback(
-    (id: string) => {
-      const wasLiked = liked.has(id)
-
-      setLiked((prev) => {
-        const next = new Set(prev)
-        if (wasLiked) next.delete(id)
-        else next.add(id)
-        persistLiked(next)
-        return next
-      })
-      setCounts((prev) => ({
-        ...prev,
-        [id]: Math.max((prev[id] ?? 0) + (wasLiked ? -1 : 1), 0),
-      }))
-
-      const request = wasLiked ? decrementLike(id) : incrementLike(id)
-      request
-        .then((serverCount) => {
-          setCounts((prev) => ({ ...prev, [id]: serverCount }))
-        })
-        .catch((err: unknown) => {
-          console.error('[likes]', err)
-          // Revert the optimistic update on failure.
-          setLiked((prev) => {
-            const next = new Set(prev)
-            if (wasLiked) next.add(id)
-            else next.delete(id)
-            persistLiked(next)
-            return next
-          })
-          setCounts((prev) => ({
-            ...prev,
-            [id]: Math.max((prev[id] ?? 0) + (wasLiked ? 1 : -1), 0),
-          }))
-        })
-    },
-    [liked],
-  )
 
   const closeLightbox = useCallback(() => setLightboxIndex(null), [])
   const showNext = useCallback(
@@ -211,35 +109,30 @@ export default function Photography() {
 
   const current = lightboxIndex !== null ? photos[lightboxIndex] : null
 
+  const lightboxNavButton =
+    'absolute top-1/2 z-10 flex size-12 -translate-y-1/2 cursor-pointer items-center justify-center border border-white/15 bg-white/5 text-white/70 transition-colors duration-200 clip-corner-sm hover:bg-primary/60 hover:text-white'
+
   return (
-    <div className="pf-wrap page-scroll">
-      <Background />
-      <Nav />
+    <PageShell>
+      <PageHeader
+        kicker="04 // Through the lens"
+        title="Photo"
+        accent="graphy"
+        sub="A collection of moments I've captured. Click any photo to view it full size."
+      />
 
-      <div className="page-content">
-        <div className="page-header fade-in">
-          <div className="pf-tag">Through the lens</div>
-          <h1 className="pf-name">Photo<span>graphy</span></h1>
-          <p className="pf-bio" style={{ maxWidth: 480, marginTop: 8 }}>
-            A quiet archive of light and timing — moments collected, never staged.
-            Select any frame to view it in full.
-          </p>
-        </div>
-
-        <div className="photo-grid fade-in-delay">
-          {photos.length === 0 ? (
-            <div className="gallery-empty">
-              <p>
-                {loadFailed
-                  ? 'The gallery could not be loaded — please try again shortly.'
-                  : 'The gallery awaits its first frame — return soon.'}
-              </p>
-            </div>
-          ) : (
-            photos.map((photo, index) => (
+      <div className="columns-[220px] gap-3.5 md:columns-[260px]">
+        {photos.length === 0 ? (
+          <div className="py-16 text-center font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground [column-span:all]">
+            {loadFailed
+              ? 'The gallery could not be loaded — please try again shortly.'
+              : 'The gallery awaits its first frame — return soon.'}
+          </div>
+        ) : (
+          photos.map((photo, index) => (
+            <Reveal key={photo.id} delay={(index % 4) * 0.07} className="mb-3.5 break-inside-avoid">
               <div
-                className="photo-item"
-                key={photo.id}
+                className="group relative cursor-pointer overflow-hidden border border-border bg-primary/5 clip-corner-sm"
                 role="button"
                 tabIndex={0}
                 aria-label={`Open ${stripExt(photo.name)}`}
@@ -252,58 +145,92 @@ export default function Photography() {
                 }}
               >
                 {photo.kind === 'video' ? (
-                  <video src={photo.src} muted loop playsInline preload="metadata" />
+                  <video
+                    className="block w-full transition-transform duration-500 group-hover:scale-105"
+                    src={photo.src}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
                 ) : (
-                  <img src={photo.src} alt={stripExt(photo.name)} loading="lazy" />
-                )}
-                <div className="photo-overlay">
-                  <span className="photo-name">{stripExt(photo.name)}</span>
-                </div>
-                {likesEnabled && (
-                  <LikeButton
-                    className="photo-like"
-                    count={counts[photo.id] ?? 0}
-                    liked={liked.has(photo.id)}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleLike(photo.id)
-                    }}
+                  <img
+                    className="block w-full transition-transform duration-500 group-hover:scale-105"
+                    src={photo.src}
+                    alt={stripExt(photo.name)}
+                    loading="lazy"
                   />
                 )}
+
+                <div className="pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-white">
+                    {stripExt(photo.name)}
+                  </span>
+                </div>
               </div>
-            ))
-          )}
-        </div>
+            </Reveal>
+          ))
+        )}
       </div>
 
+      {/* Lightbox */}
       <div
-        className={'lightbox' + (current ? ' open' : '')}
-        onClick={(e) => { if (e.target === e.currentTarget) closeLightbox() }}
+        className={cn(
+          'fixed inset-0 z-[1000] flex items-center justify-center bg-[rgba(10,4,0,0.93)] transition-opacity duration-300',
+          current ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
+        )}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) closeLightbox()
+        }}
       >
-        <button className="lb-close" type="button" onClick={closeLightbox}>✕</button>
-        <button className="lb-prev" type="button" onClick={showPrev}>‹</button>
-        <button className="lb-next" type="button" onClick={showNext}>›</button>
-        <div className="lb-img-wrap">
+        <button
+          className="absolute top-5 right-6 z-10 flex size-10 cursor-pointer items-center justify-center border-none bg-transparent text-white/70 transition-colors hover:text-primary"
+          type="button"
+          aria-label="Close"
+          onClick={closeLightbox}
+        >
+          <X className="size-6" />
+        </button>
+        <button
+          className={cn(lightboxNavButton, 'left-3 md:left-5')}
+          type="button"
+          aria-label="Previous photo"
+          onClick={showPrev}
+        >
+          <ChevronLeft className="size-6" />
+        </button>
+        <button
+          className={cn(lightboxNavButton, 'right-3 md:right-5')}
+          type="button"
+          aria-label="Next photo"
+          onClick={showNext}
+        >
+          <ChevronRight className="size-6" />
+        </button>
+
+        <div className="flex max-h-[90vh] max-w-[90vw] flex-col items-center">
           {current &&
             (current.kind === 'video' ? (
-              <video className="lb-img" src={current.src} controls autoPlay loop playsInline />
+              <video
+                className="max-h-[82vh] max-w-[90vw] object-contain"
+                src={current.src}
+                controls
+                autoPlay
+                loop
+                playsInline
+              />
             ) : (
-              <img className="lb-img" src={current.src} alt={current.name} />
+              <img
+                className="max-h-[82vh] max-w-[90vw] object-contain"
+                src={current.src}
+                alt={current.name}
+              />
             ))}
-          <div className="lb-caption">{current ? stripExt(current.name) : ''}</div>
-          {likesEnabled && current && (
-            <LikeButton
-              className="lb-like"
-              count={counts[current.id] ?? 0}
-              liked={liked.has(current.id)}
-              onClick={(e) => {
-                e.stopPropagation()
-                toggleLike(current.id)
-              }}
-            />
-          )}
+          <div className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-white/60">
+            {current ? stripExt(current.name) : ''}
+          </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   )
 }
