@@ -20,10 +20,6 @@ export default function PageShell({ children }: { children: ReactNode }) {
       <footer className="relative z-10 border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground md:px-10">
           <span>© 2026 Jaison Jiji</span>
-          <span className="flex items-center gap-2">
-            <span className="blink inline-block size-1.5 bg-primary" aria-hidden />
-            Designed &amp; built in the sun
-          </span>
         </div>
       </footer>
     </div>
