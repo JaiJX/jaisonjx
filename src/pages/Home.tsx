@@ -44,7 +44,8 @@ export default function Home() {
         <section className="flex flex-1 flex-col justify-center py-14 md:py-20">
           <div className="grid items-center gap-10 md:grid-cols-[1fr_auto]">
             <div>
-              <h1 className="display-hero text-[clamp(3.4rem,12vw,9.5rem)] text-ink">
+              {/* 3rem floor: at 3.4rem, JAISON + its echo shadow clips on 320px phones */}
+              <h1 className="display-hero text-[clamp(3rem,12vw,9.5rem)] text-ink">
                 <span className="boot-wipe hero-echo block" style={boot(0.3)}>
                   Jaison
                 </span>
