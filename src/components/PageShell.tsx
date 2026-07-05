@@ -41,6 +41,15 @@ export function PageHeader({
   accent?: string
   sub?: string
 }) {
+  // The title renders on a single line in Deltha, which runs ~0.9em per
+  // uppercase glyph — a fixed clamp() lets long titles (PHOTOGRAPHY,
+  // ACHIEVEMENTS) overflow the viewport on phones, where the shell's
+  // overflow-x-clip silently cuts them. Divide the available width by the
+  // character count (with ~5% slack) so every title fits;
+  // the 5.5rem cap keeps desktop identical to before.
+  const chars = (title + (accent ?? '')).length
+  const fitSize = `clamp(1.5rem, calc((100vw - 3rem) / ${(chars * 0.95).toFixed(2)}), 5.5rem)`
+
   return (
     <div className="mb-14">
       <p
@@ -51,8 +60,8 @@ export function PageHeader({
         {kicker}
       </p>
       <h1
-        className="display-hero boot-wipe hero-echo text-[clamp(2.6rem,8vw,5.5rem)] text-ink"
-        style={{ '--boot-delay': '0.25s' } as CSSProperties}
+        className="display-hero boot-wipe hero-echo text-ink"
+        style={{ '--boot-delay': '0.25s', fontSize: fitSize } as CSSProperties}
       >
         {title}
         {accent && <span className="text-primary">{accent}</span>}
