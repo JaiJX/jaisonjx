@@ -5,8 +5,9 @@ import App from './App.tsx'
 import './index.css'
 
 Sentry.init({
-  dsn: 'https://7eb194015107ce18373a9870e6da0cf6@o4511408889724928.ingest.us.sentry.io/4511448895127552',
-  sendDefaultPii: true,
+  dsn: import.meta.env.VITE_SENTRY_DSN as string | undefined,
+  enabled: import.meta.env.PROD && Boolean(import.meta.env.VITE_SENTRY_DSN),
+  sendDefaultPii: false,
 })
 
 createRoot(document.getElementById('root')!).render(
