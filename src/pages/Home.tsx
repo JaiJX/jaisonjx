@@ -73,12 +73,12 @@ export default function Home() {
 
               <div className="boot mt-9 flex flex-wrap gap-4" style={boot(1)}>
                 <Button asChild size="lg">
-                  <Link to="/photography">
+                  <Link to="/portfolio/photography">
                     View my work <ArrowUpRight />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link to="/about#contact">
+                  <Link to="/portfolio/about#contact">
                     Get in touch <Mail />
                   </Link>
                 </Button>
@@ -136,7 +136,7 @@ export default function Home() {
 
       <footer className="relative z-10">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground md:px-10">
-          <span>© 2026 Jaison Jiji</span>
+          <span>© {new Date().getFullYear()} Jaison Jiji</span>
         </div>
       </footer>
     </div>

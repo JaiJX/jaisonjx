@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import Landing from './pages/Landing.tsx'
 import Home from './pages/Home.tsx'
 import About from './pages/About.tsx'
 import Achievements from './pages/Achievements.tsx'
@@ -8,6 +9,22 @@ import Projects from './pages/Projects.tsx'
 import BookTrackerLayout from './components/BookTrackerLayout.tsx'
 import BookTrackerApp from './pages/BookTrackerApp.tsx'
 import BookTrackerMyList from './pages/BookTrackerMyList.tsx'
+
+// Pre-landing-page URLs → their new home under /portfolio.
+const legacyRedirects = [
+  'about',
+  'achievements',
+  'photography',
+  'projects',
+  'projects/book-tracker',
+  'projects/book-tracker/my-list',
+]
+
+/** Redirect that keeps ?search and #hash (e.g. /about#contact). */
+function Redirect({ to }: { to: string }) {
+  const { search, hash } = useLocation()
+  return <Navigate to={`${to}${search}${hash}`} replace />
+}
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -31,16 +48,20 @@ export default function App() {
     <>
       <ScrollManager />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/achievements" element={<Achievements />} />
-        <Route path="/photography" element={<Photography />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/book-tracker" element={<BookTrackerLayout />}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/portfolio" element={<Home />} />
+        <Route path="/portfolio/about" element={<About />} />
+        <Route path="/portfolio/achievements" element={<Achievements />} />
+        <Route path="/portfolio/photography" element={<Photography />} />
+        <Route path="/portfolio/projects" element={<Projects />} />
+        <Route path="/portfolio/projects/book-tracker" element={<BookTrackerLayout />}>
           <Route index element={<BookTrackerApp />} />
           <Route path="my-list" element={<BookTrackerMyList />} />
         </Route>
-        <Route path="*" element={<Home />} />
+        {legacyRedirects.map((path) => (
+          <Route key={path} path={`/${path}`} element={<Redirect to={`/portfolio/${path}`} />} />
+        ))}
+        <Route path="*" element={<Landing />} />
       </Routes>
     </>
   )

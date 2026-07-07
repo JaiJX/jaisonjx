@@ -4,7 +4,7 @@ import StarRating from '../components/StarRating'
 import { useBookStorageContext } from '../context/BookStorageContext'
 import { getBookCoverUrl } from '../utils/bookImages'
 
-/** Saved-books page of the full Book Finder app at /projects/book-tracker/my-list. */
+/** Saved-books page of the full Book Finder app at /portfolio/projects/book-tracker/my-list. */
 export default function BookTrackerMyList() {
   const { savedList, ratings, notes, rateBook, updateNote, removeFromList } =
     useBookStorageContext()
@@ -19,7 +19,7 @@ export default function BookTrackerMyList() {
       {savedList.length === 0 ? (
         <div className="myListEmpty">
           <p>Your list is empty.</p>
-          <Link to="/projects/book-tracker" className="myListEmptyLink">
+          <Link to="/portfolio/projects/book-tracker" className="myListEmptyLink">
             Search for books to add
           </Link>
         </div>

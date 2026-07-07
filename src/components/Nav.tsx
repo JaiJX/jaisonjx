@@ -4,11 +4,11 @@ import { NavLink, Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
 const links = [
-  { to: '/', label: 'Home', index: '01' },
-  { to: '/about', label: 'About', index: '02' },
-  { to: '/achievements', label: 'Achievements', index: '03' },
-  { to: '/photography', label: 'Photography', index: '04' },
-  { to: '/projects', label: 'Projects', index: '05' },
+  { to: '/portfolio', label: 'Home', index: '01' },
+  { to: '/portfolio/about', label: 'About', index: '02' },
+  { to: '/portfolio/achievements', label: 'Achievements', index: '03' },
+  { to: '/portfolio/photography', label: 'Photography', index: '04' },
+  { to: '/portfolio/projects', label: 'Projects', index: '05' },
 ]
 
 export default function Nav() {
@@ -24,7 +24,7 @@ export default function Nav() {
         <Link
           to="/"
           className="display glitch-hover text-xl text-ink no-underline md:text-2xl"
-          aria-label="Jaison Jiji — home"
+          aria-label="Jaison Jiji — gateway"
         >
           JJ<span className="text-primary">X</span>
         </Link>
@@ -34,7 +34,7 @@ export default function Nav() {
             <li key={to}>
               <NavLink
                 to={to}
-                end={to === '/'}
+                end={to === '/portfolio'}
                 className={({ isActive }) =>
                   cn(
                     'group relative flex items-baseline gap-1.5 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.18em] no-underline transition-colors duration-200',
