@@ -114,7 +114,7 @@ export default function Projects() {
                 ))}
               </div>
               <Button asChild variant="outline" size="sm" className="mt-5">
-                <Link to="/projects/book-tracker">
+                <Link to="/portfolio/projects/book-tracker">
                   Open full app <ArrowUpRight />
                 </Link>
               </Button>

@@ -72,12 +72,12 @@ export default function Home() {
 
               <div className="boot mt-9 flex flex-wrap gap-4" style={boot(1)}>
                 <Button asChild size="lg">
-                  <Link to="/photography">
+                  <Link to="/portfolio/photography">
                     View my work <ArrowUpRight />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link to="/about#contact">
+                  <Link to="/portfolio/about#contact">
                     Get in touch <Mail />
                   </Link>
                 </Button>

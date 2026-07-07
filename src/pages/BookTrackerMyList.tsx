@@ -19,7 +19,7 @@ export default function BookTrackerMyList() {
       {savedList.length === 0 ? (
         <div className="myListEmpty">
           <p>Your list is empty.</p>
-          <Link to="/projects/book-tracker" className="myListEmptyLink">
+          <Link to="/portfolio/projects/book-tracker" className="myListEmptyLink">
             Search for books to add
           </Link>
         </div>

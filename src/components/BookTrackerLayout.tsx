@@ -10,14 +10,14 @@ function BookTrackerNav() {
     <header className="bt-header">
       <nav className="bt-nav" aria-label="Book tracker">
         <NavLink
-          to="/projects/book-tracker"
+          to="/portfolio/projects/book-tracker"
           end
           className={({ isActive }) => (isActive ? 'bt-navLink active' : 'bt-navLink')}
         >
           Search
         </NavLink>
         <NavLink
-          to="/projects/book-tracker/my-list"
+          to="/portfolio/projects/book-tracker/my-list"
           className={({ isActive }) => (isActive ? 'bt-navLink active' : 'bt-navLink')}
         >
           My List
@@ -33,7 +33,7 @@ function BookTrackerNav() {
 }
 
 /**
- * Shared shell for the full Book Tracker app at /projects/book-tracker.
+ * Shared shell for the full Book Tracker app at /portfolio/projects/book-tracker.
  * Provides persistent storage, the dark page background, the back link, and
  * the in-app Search / My List navigation around the routed pages.
  */
@@ -47,7 +47,7 @@ export default function BookTrackerLayout() {
   return (
     <BookStorageProvider>
       <div className="bt-app">
-        <Link to="/projects" className="bt-back">← Back to Projects</Link>
+        <Link to="/portfolio/projects" className="bt-back">← Back to Projects</Link>
         <BookTrackerNav />
         <Outlet />
       </div>

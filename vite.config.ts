@@ -17,10 +17,9 @@ export default defineConfig({
       input: {
         // Main portfolio SPA.
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
-        // Standalone "De Beauvoir · Three Lenses" page. Not linked anywhere in
-        // the portfolio — reachable only by visiting /projects/bible/ directly.
-        // Built as its own entry so its global CSS stays isolated from the
-        // portfolio.
+        // Standalone "De Beauvoir · Three Lenses" page at /projects/bible/,
+        // linked from the landing hub. Built as its own entry so its global
+        // CSS stays isolated from the portfolio.
         bible: fileURLToPath(new URL('./projects/bible/index.html', import.meta.url)),
       },
     },
