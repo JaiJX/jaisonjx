@@ -4,7 +4,7 @@ import StarRating from '../components/StarRating'
 import { useBookStorageContext } from '../context/BookStorageContext'
 import { getBookCoverUrl } from '../utils/bookImages'
 
-/** Saved-books page of the full Book Finder app at /projects/book-tracker/my-list. */
+/** Saved-books page of the full Book Finder app at /portfolio/projects/book-tracker/my-list. */
 export default function BookTrackerMyList() {
   const { savedList, ratings, notes, rateBook, updateNote, removeFromList } =
     useBookStorageContext()

@@ -135,7 +135,7 @@ export default function Home() {
 
       <footer className="relative z-10">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground md:px-10">
-          <span>© 2026 Jaison Jiji</span>
+          <span>© {new Date().getFullYear()} Jaison Jiji</span>
         </div>
       </footer>
     </div>

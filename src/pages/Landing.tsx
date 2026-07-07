@@ -66,7 +66,7 @@ export default function Landing() {
         </section>
 
         <footer className="boot font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground" style={boot(1)}>
-          © 2026 Jaison Jiji
+          © {new Date().getFullYear()} Jaison Jiji
         </footer>
       </main>
     </div>
