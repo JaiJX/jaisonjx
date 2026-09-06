@@ -9,7 +9,6 @@ import Reveal from '@/components/Reveal.tsx'
 import { Button } from '@/components/ui/button'
 
 const stats = [
-  { num: '12+', label: 'Projects' },
   { num: '3', label: 'Years' },
   { num: '∞', label: 'Curiosity' },
 ]
@@ -101,7 +100,7 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="mt-16 grid max-w-xl grid-cols-3 border-t border-border pt-7">
+          <div className="mt-16 grid max-w-xs grid-cols-2 border-t border-border pt-7">
             {stats.map(({ num, label }, i) => (
               <Reveal key={label} delay={i * 0.12}>
                 <div className="display text-3xl text-primary md:text-5xl">{num}</div>
