@@ -18,12 +18,9 @@ export default function NotFound() {
 
   return (
     <PageShell>
-      {/* This page is short; without a floor the shared footer rides up into
-          the middle of a tall desktop viewport. 16rem ≈ the shell's own
-          padding plus the footer. */}
-      {/* Centred in the viewport. The floor is the shell's own padding plus
-          the footer, so this page fills the screen instead of letting the
-          shared footer ride up into the middle of it. */}
+      {/* Centred in the viewport. The 16rem floor is the shell's own padding
+          plus the footer: without it this short page lets the shared footer
+          ride up into the middle of a tall desktop viewport. */}
       <div className="flex min-h-[calc(100dvh-16rem)] flex-col justify-center">
         {/* No image-rendering:pixelated — the art is served at 627px and shown
             at roughly half that, and browser smoothing beats nearest-neighbour
