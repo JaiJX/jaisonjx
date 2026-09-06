@@ -9,6 +9,7 @@ import Projects from './pages/Projects.tsx'
 import BookTrackerLayout from './components/BookTrackerLayout.tsx'
 import BookTrackerApp from './pages/BookTrackerApp.tsx'
 import BookTrackerMyList from './pages/BookTrackerMyList.tsx'
+import NotFound from './pages/NotFound.tsx'
 
 // Pre-landing-page URLs → their new home under /portfolio.
 const legacyRedirects = [
@@ -61,7 +62,7 @@ export default function App() {
         {legacyRedirects.map((path) => (
           <Route key={path} path={`/${path}`} element={<Redirect to={`/portfolio/${path}`} />} />
         ))}
-        <Route path="*" element={<Landing />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )
