@@ -2,6 +2,7 @@ import type { ReactNode, CSSProperties } from 'react'
 
 import Background from '@/components/Background.tsx'
 import Nav from '@/components/Nav.tsx'
+import { cn } from '@/lib/utils'
 
 /**
  * Shared chrome for all portfolio pages: atmosphere, fixed nav, content
@@ -29,17 +30,22 @@ export default function PageShell({ children }: { children: ReactNode }) {
 /**
  * Standard page header: mono kicker tag + giant Deltha title.
  * `accent` renders highlighted in solar orange.
+ *
+ * `centered` is opt-in (the 404 page uses it); every other page keeps the
+ * default left alignment.
  */
 export function PageHeader({
   kicker,
   title,
   accent,
   sub,
+  centered = false,
 }: {
   kicker: string
   title: string
   accent?: string
   sub?: string
+  centered?: boolean
 }) {
   // The title renders on a single line in Deltha, which runs ~0.9em per
   // uppercase glyph — a fixed clamp() lets long titles (PHOTOGRAPHY,
@@ -51,13 +57,18 @@ export function PageHeader({
   const fitSize = `clamp(1.5rem, calc((100vw - 3rem) / ${(chars * 0.95).toFixed(2)}), 5.5rem)`
 
   return (
-    <div className="mb-14">
+    <div className={cn('mb-14', centered && 'text-center')}>
       <p
-        className="boot mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.24em] text-accent"
+        className={cn(
+          'boot mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.24em] text-accent',
+          centered && 'justify-center',
+        )}
         style={{ '--boot-delay': '0.15s' } as CSSProperties}
       >
         <span className="inline-block h-px w-8 bg-accent" aria-hidden />
         {kicker}
+        {/* mirrored rule so the kicker reads as deliberately centered */}
+        {centered && <span className="inline-block h-px w-8 bg-accent" aria-hidden />}
       </p>
       <h1
         className="display-hero boot-wipe hero-echo text-ink"
@@ -68,7 +79,10 @@ export function PageHeader({
       </h1>
       {sub && (
         <p
-          className="boot mt-5 max-w-xl text-sm leading-relaxed text-ink-soft/80 md:text-base"
+          className={cn(
+            'boot mt-5 max-w-xl text-sm leading-relaxed text-ink-soft/80 md:text-base',
+            centered && 'mx-auto',
+          )}
           style={{ '--boot-delay': '0.45s' } as CSSProperties}
         >
           {sub}
