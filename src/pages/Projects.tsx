@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, BookOpen, Search } from 'lucide-react'
+import { ArrowUpRight, BookOpen, Bot, Search } from 'lucide-react'
 
 import PageShell, { PageHeader } from '@/components/PageShell.tsx'
 import Reveal from '@/components/Reveal.tsx'
@@ -81,9 +81,12 @@ function BookTracker() {
   )
 }
 
-const tags = ['React', 'TypeScript', 'Google Books API', 'Vite']
+const bookFinderTags = ['React', 'TypeScript', 'Google Books API', 'Vite']
+const laserRobotTags = ['Robotics', 'Hardware', 'Electronics']
+const laserRobotNotesUrl =
+  'https://app.notion.com/p/Laser-Engraving-Project-Details-and-Progress-3f773b2c49d880cd8456f889d29a18a6'
 
-/** Portfolio Projects page showcasing built work with a live Book Finder demo. */
+/** Portfolio Projects page: finished and in-progress work, with a live Book Finder demo. */
 export default function Projects() {
   return (
     <PageShell>
@@ -107,7 +110,7 @@ export default function Projects() {
                 practice hooks, async data fetching, and component composition.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                {tags.map((t) => (
+                {bookFinderTags.map((t) => (
                   <Badge key={t} variant="outline">
                     {t}
                   </Badge>
@@ -135,6 +138,48 @@ export default function Projects() {
             </p>
             <BookTracker />
           </CardContent>
+        </Card>
+      </Reveal>
+
+      <Reveal className="mt-8">
+        <Card>
+          <CardHeader className="flex-row items-start justify-between gap-5">
+            <div>
+              <div className="mb-2 flex flex-wrap items-center gap-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-accent">
+                  P-002
+                </p>
+                <Badge>
+                  <span className="blink inline-block size-1.5 bg-primary-foreground" aria-hidden />
+                  In progress
+                </Badge>
+              </div>
+              <h2 className="display text-2xl text-ink md:text-3xl">Laser Engraving Robot</h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft/85">
+                A robot that steers a laser to engrave designs into materials.
+                Currently mid-build — follow along as it comes together, from
+                how it works to its first engravings.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {laserRobotTags.map((t) => (
+                  <Badge key={t} variant="outline">
+                    {t}
+                  </Badge>
+                ))}
+              </div>
+              <Button asChild variant="outline" size="sm" className="mt-5">
+                <a href={laserRobotNotesUrl} target="_blank" rel="noopener noreferrer">
+                  Follow the build <ArrowUpRight />
+                </a>
+              </Button>
+            </div>
+            <span
+              className="hidden size-14 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-accent clip-corner-sm sm:flex"
+              aria-hidden
+            >
+              <Bot className="size-7" />
+            </span>
+          </CardHeader>
         </Card>
       </Reveal>
     </PageShell>
