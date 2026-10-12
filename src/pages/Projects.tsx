@@ -83,6 +83,8 @@ function BookTracker() {
 
 const bookFinderTags = ['React', 'TypeScript', 'Google Books API', 'Vite']
 const laserRobotTags = ['Robotics', 'Hardware', 'Electronics']
+const laserRobotNotesUrl =
+  'https://app.notion.com/p/Laser-Engraving-Project-Details-and-Progress-3f773b2c49d880cd8456f889d29a18a6'
 
 /** Portfolio Projects page: finished and in-progress work, with a live Book Finder demo. */
 export default function Projects() {
@@ -155,8 +157,8 @@ export default function Projects() {
               <h2 className="display text-2xl text-ink md:text-3xl">Laser Engraving Robot</h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft/85">
                 A robot that steers a laser to engrave designs into materials.
-                Currently mid-build — how it works, the process, and its first
-                engravings will land here as it comes together.
+                Currently mid-build — follow along as it comes together, from
+                how it works to its first engravings.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {laserRobotTags.map((t) => (
@@ -165,6 +167,11 @@ export default function Projects() {
                   </Badge>
                 ))}
               </div>
+              <Button asChild variant="outline" size="sm" className="mt-5">
+                <a href={laserRobotNotesUrl} target="_blank" rel="noopener noreferrer">
+                  Follow the build <ArrowUpRight />
+                </a>
+              </Button>
             </div>
             <span
               className="hidden size-14 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-accent clip-corner-sm sm:flex"
