@@ -10,6 +10,7 @@ import BookTrackerLayout from './components/BookTrackerLayout.tsx'
 import BookTrackerApp from './pages/BookTrackerApp.tsx'
 import BookTrackerMyList from './pages/BookTrackerMyList.tsx'
 import NotFound from './pages/NotFound.tsx'
+import Request from './pages/Request.tsx'
 
 // Pre-landing-page URLs → their new home under /portfolio.
 const legacyRedirects = [
@@ -50,6 +51,7 @@ export default function App() {
       <ScrollManager />
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/request" element={<Request />} />
         <Route path="/portfolio" element={<Home />} />
         <Route path="/portfolio/about" element={<About />} />
         <Route path="/portfolio/achievements" element={<Achievements />} />
