@@ -6,6 +6,11 @@ import Background from '@/components/Background.tsx'
 import Logo from '@/components/Logo.tsx'
 import { Button } from '@/components/ui/button'
 
+const destinations = [
+  { to: '/portfolio', label: 'Enter portfolio', path: '/portfolio' },
+  { to: '/request', label: 'Request a site', path: '/request' },
+]
+
 function boot(delay: number) {
   return { '--boot-delay': `${delay}s` } as CSSProperties
 }
@@ -47,16 +52,22 @@ export default function Landing() {
                 The personal domain of Jaison Jiji
               </p>
 
-              <div className="boot mt-10 flex flex-wrap items-center gap-5" style={boot(0.8)}>
-                <Button asChild size="lg">
-                  <Link to="/portfolio">
-                    Enter portfolio <ArrowUpRight />
-                  </Link>
-                </Button>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  /portfolio
-                </span>
-              </div>
+              <nav aria-label="Destinations" className="boot mt-10 max-w-md" style={boot(0.8)}>
+                <ul className="flex list-none flex-col gap-4 p-0">
+                  {destinations.map(({ to, label, path }, i) => (
+                    <li key={to} className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                      <Button asChild size="lg" variant={i === 0 ? 'default' : 'outline'} className="w-full sm:w-72">
+                        <Link to={to}>
+                          {label} <ArrowUpRight />
+                        </Link>
+                      </Button>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {path}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
 
             <div className="boot hidden pt-3 md:block" style={boot(0.7)}>
